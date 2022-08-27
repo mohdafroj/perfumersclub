@@ -1,0 +1,349 @@
+	<div class="content">
+        <section class="container-fluid section_box product_detail_mobile">
+        	<div [ngSwitch]="pageType" class="container">
+				<div *ngSwitchCase="'loading'" class="row product_detail">
+					<div class="col-xs-12 xs-no-padding">
+						<div class="col-sm-12 col-xs-12 no-padding-right xs-no-padding">
+							<h1 class="col-xs-12 text-center detail_heading">
+								<img src="assets/images/loading.gif" />
+							</h1>
+						</div>
+					</div>
+				</div>
+				
+                <div *ngSwitchCase="'product'" class="row product_detail">
+                    <div class="col-sm-5 col-12 carousel slide popupImageSlider" id="demo" data-ride="carousel">
+                        <!--h3 class="d-md-none d-block">{{result.title}}</h3-->
+						<ul *ngIf="result['images'].length > 1" class="carousel-indicators">
+							<li *ngFor="let image of result['images']; let i = index;" data-target="#demo" attr.data-slide-to="{{i}}" [ngClass]="{'active':(sliderIndex == i)}"></li>
+						</ul>
+						
+						<div class="carousel-inner">
+							<div *ngFor="let image of result['images']; let i = index;" class="carousel-item image_part" [ngClass]="{'active':(sliderIndex == i)}">
+								<img [src]="image.large" [alt]="result.name" class="img-fluid mx-auto" alt="Bombshell">
+							</div>
+						</div>
+						<!--div *ngIf="result['isStock'] != 'in_stock'" class="carousel-inner">
+							<div class="carousel-item image_part active">
+								<img [src]="result.oos_image" [alt]="result.name" class="img-fluid mx-auto">
+							</div>
+						</div-->
+						<div *ngIf="result['isStock'] == 'out_of_stock'" class="out_of_stock"><span>Out Of Stock</span></div>
+					</div>
+					<div class="col-sm-7 col-12">
+						<h3 class=""><span *ngIf="result.categories[0]">{{result.categories[0]['name']}}</span> {{result.title}}</h3>
+						<h4 *ngIf="result.discount.original; else elsePrice">
+							<dfn>
+								₹{{result.price | number:'1.2-2'}}<br>
+								<span style="color:#3b4e76;">M.R.P.-</span> 
+								<del>₹{{result.discount.original | number:'1.2-2'}}</del>&nbsp;
+								<span>{{result.discount.label}}</span>
+							</dfn>
+							<!--dfn><em>Sold</em> 
+								<span class="soldNumbr">
+									<b *ngFor="let digit of result.sold.toString().split('');">{{digit}}</b>
+								</span>
+							</dfn-->
+						</h4>
+						<ng-template #elsePrice>
+							<h4>
+								<dfn>M.R.P.- ₹{{result.price | number:'1.2-2'}}</dfn>
+								<!--dfn><em>Sold</em> 
+									<span class="soldNumbr">
+										<b *ngFor="let digit of result.sold.toString().split('');">{{digit}}</b>
+									</span>
+								</dfn-->
+							</h4>
+						</ng-template>
+						<p class="col-xs-12">Inclusive of all taxes</p>
+						<button class="btn my-btn cart_btn from-left" *ngIf="( (result.isStock == 'coming_soon') || (result.isStock == 'out_of_stock') )">Out Of Stock</button>
+                        <button *ngIf="( (result.isStock == 'in_stock') && (customerCart.indexOf(result.id) == -1) )" (click)="addCart(result);" class="btn my-btn cart_btn from-left">Buy Now</button>
+                        <a *ngIf="( (result.isStock == 'in_stock') && (customerCart.indexOf(result.id) > -1) )" routerLink="/checkout/cart" class="btn my-btn cart_btn from-left">Go to Cart</a>
+						<!--button *ngIf="( (result.isStock == 'coming_soon') || (result.isStock == 'out_of_stock') )" type="button" class="btn my-btn cart_btn from-left" (click)="notifyMePopup(result.id);" data-target="#NotifyMe" data-toggle="modal">Notify Me!</button-->
+						<div class="accordion accordionMain" id="accordionExample">
+							<!-- start of product detail card -->
+							<div class="card">
+								<div class="card-header" id="tabs1">
+									<button type="button" (click)="toggleMethod(0)" class="btn btn-link" data-toggle="collapse" data-target="#productDetails" aria-expanded="true">
+										Product Details <i class="fa fa-{{toggleClass[0]}}"></i>
+									</button>
+								</div>
+								<div id="productDetails" class="collapse show" aria-labelledby="tabs1" data-parent="#accordionExample">
+									<div class="card-body">
+										<ul class="list-unstyled">
+											<li>
+												Contains: <span>{{result.size+result.unit}}</span>
+											</li>
+											<li>
+												Gender: <span>For {{result.gender}}</span>
+											</li>
+											<li>
+												Perfume Type: <span>{{result.perfumeType ? result.perfumeType : 'NA'}}</span>
+											</li>
+										</ul>
+									</div>
+								</div>
+							</div>
+							<!-- start description card -->
+							<div class="card">
+								<div class="card-header" id="tabs2">
+									<button type="button" (click)="toggleMethod(1)" class="btn btn-link" data-toggle="collapse" data-target="#description">
+										Description <i class="fa fa-{{toggleClass[1]}}"></i>
+									</button>
+								</div>
+								<div id="description" class="collapse" aria-labelledby="tabs2" data-parent="#accordionExample">
+									<div class="card-body justify-content-center" [innerHTML]="sanitizer.bypassSecurityTrustHtml(result.shortDescription)"></div>
+								</div>
+							</div>
+							<!-- end of description card -->
+							
+							<!-- start of notes card -->
+							<div class="card">
+								<div class="card-header" id="tabs3">
+									<button type="button" (click)="toggleMethod(2)" class="btn btn-link collapsed" data-toggle="collapse" data-target="#notes">
+										Notes <i class="fa fa-{{toggleClass[2]}}"></i>
+									</button>
+								</div>
+								<div id="notes" class="collapse" aria-labelledby="tabs3" data-parent="#accordionExample">
+									<div class="card-body">
+										<ul class="list-unstyled" *ngIf="(result.notes.length == 0) && (result.comboNotes.length == 0)">
+											<li> NA </li>
+										</ul>
+										<ul class="list-unstyled" *ngIf="result.notes.length">
+											<li *ngFor="let note of result.notes">
+												{{note.title.replace('_',' ').toUpperCase()}} : <span>{{note.description}}</span>
+											</li>
+										</ul>
+										<div class="row" *ngFor="let combo of result.comboNotes">
+											<div class="col-12">
+												<ul class="list-unstyled">
+													<li>{{combo.title}} </li>
+												</ul>
+												<p *ngFor="let note of combo.notes">
+													{{note.title.replace('_',' ').toUpperCase()}} : <span class="fs-6">{{note.description}}</span>
+												</p>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- end of notes card -->
+							
+							<!-- start card -->
+							<div class="card">
+								<div class="card-header" id="tabs4">
+									<button type="button" (click)="toggleMethod(3)" class="btn btn-link collapsed" data-toggle="collapse" data-target="#offers">
+										Offers <i class="fa fa-{{toggleClass[3]}}"></i>
+									</button>
+								</div>
+								<div id="offers" class="collapse" aria-labelledby="tabs4" data-parent="#accordionExample">
+									<div class="card-body" [innerHTML]="sanitizer.bypassSecurityTrustHtml(result.offer)">
+		
+									</div>
+								</div>
+							</div>
+							<!-- end card -->
+							
+							<!-- start card -->
+							<div class="card">
+								<div class="card-header" id="tabs5">
+									<button type="button" (click)="toggleMethod(4)" class="btn btn-link collapsed" data-toggle="collapse" data-target="#pinCode">
+										Pin Code And Delivery Time <i class="fa fa-{{toggleClass[4]}}"></i>
+									</button>
+								</div>
+								<div id="pinCode" class="collapse" aria-labelledby="tabs5" data-parent="#accordionExample">
+									<div class="card-body">
+										<form [formGroup]="pincodeForm" (ngSubmit)="checkPincode(pincodeForm.value.pincode);">
+											<div class="check_pincode">
+												<div class="input-group">
+													<input type="text" class="form-control" formControlName="pincode" placeholder="Enter Pincode">
+													<div class="input-group-append">
+														<button type="submit" class="btn btn-outline-secondary">Check</button>
+													</div>
+												</div>
+												<p [ngClass]="{'pincode_error': (pincodeStep == 0), 'text-warning': (pincodeStep == 1), 'pincode_success': (pincodeStep == 2)}">{{pincodeMessage}}</p>
+											</div>
+										</form>
+									</div>
+								</div>
+							</div>
+							<!-- end card -->
+							
+							<!-- start card -->
+							<div class="card">
+								<div class="card-header" id="tabs6">
+									<button type="button" (click)="toggleMethod(5)" class="btn btn-link collapsed" data-toggle="collapse" data-target="#aboutBrand">
+										About The Brand <i class="fa fa-{{toggleClass[5]}}"></i>
+									</button>
+								</div>
+								<div id="aboutBrand" class="collapse" aria-labelledby="tabs6" data-parent="#accordionExample">
+									<div *ngIf="result['brand']" class="card-body" [innerHTML]="sanitizer.bypassSecurityTrustHtml(result.brand.description)">
+									</div>
+								</div>
+							</div>
+							<!-- end card -->
+							
+							<!-- start card -->
+							<div class="card">
+								<div class="card-header" id="tabs7">
+									<button type="button" (click)="toggleMethod(6)" class="btn btn-link collapsed" data-toggle="collapse" data-target="#reviewPanel">
+										Review <i class="fa fa-{{toggleClass[6]}}"></i>
+									</button>
+								</div>
+								<div id="reviewPanel" class="collapse" aria-labelledby="tabs7" data-parent="#accordionExample">
+									<div class="card-body reviewSec">
+										<!-- reviewBtn -->
+										<div class="reviewBtn">
+											<button type="button" class="btn my-btn checkout_btn from-left" data-toggle="modal" data-target="#reviewModal">
+												Write A Review
+											</button>
+										</div>
+										<!-- ratngSortBy -->
+										<div class="ratngSortBy">
+											<h5>
+												Rating -
+												<span>#{{customerRating | number:'1.1-1'}} | {{customerReviews}} Reviews</span>
+											</h5>
+											<h5 *ngIf="reviewsList.length > 0">
+												Sort by
+												<span>
+													<select (change)="reviewSorting($event);" class="form-control">
+														<option value="0">Most Recent</option>
+														<option value="1">Low to High</option>
+														<option value="2">High to Low</option>
+													</select>
+												</span>
+											</h5>
+										</div>
+										<!-- custRevwSec -->
+										<div class="custRevwSec">
+											<!-- custRevwBox -->
+											<div *ngFor="let item of reviewsList" class="custRevwBox">
+												<h6>
+													{{item.title}}
+													<span>#{{item.rating | number:'1.1-1'}} by {{item.customer.name}} on {{item.created}}</span>
+												</h6>
+												<p [innerHTML]="sanitizer.bypassSecurityTrustHtml(item.description)"></p>
+											</div>
+										</div>
+										<!-- loadMoreSec -->
+										<div *ngIf="moreReviewsFlag && reviewsList.length > 2" class="loadMoreSec">
+											<button (click)="loadMoreReviews();" type="button" class="btn loadMoreBtn">
+												Load More
+											</button>
+											<span>{{reviewsLoader}}</span>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- end card -->
+						</div>
+					
+					</div>
+					
+                    
+                </div>
+				
+				<div *ngSwitchCase="'static'" class="row">
+                    <div *ngIf="saleBanner" class="col-md-12 col-sm-12 col-xs-12">
+						<img src="assets/images/banners/current/perfume.jpg" class="img-responsive center-block" />
+					</div>
+					<!--static-product></static-product-->
+					<div class="col-sm-12 col-xs-12 no-padding" [innerHTML]="sanitizer.bypassSecurityTrustHtml(result.content)"></div>
+				</div>
+				
+				<div *ngSwitchDefault class="row">
+					<div class="col-xs-12 xs-no-padding">
+						<div class="col-sm-12 col-xs-12 no-padding-right xs-no-padding">
+							<h1 class="col-xs-12 text-center detail_heading">
+								<span>{{resultMsg}}</span>
+							</h1>
+						</div>
+					</div>
+				</div>
+            </div>
+        </section>
+		<div class="parentOfAplus">
+			<section class="container-fluid aPlusRowMain">
+				<div class="container">
+					<div class="row">
+						<div *ngFor="let item of plusContent" class="col-md-6 col-12 itemCatDes">
+							<figure>
+								<img src="{{item.image}}" class="img-fluid d-block w-100" alt="Bombshell">
+								<figcaption class="figure-caption">
+									<span>{{item.caption}}</span> {{item.title}}
+								</figcaption>
+							</figure>
+							<p [innerHTML]="sanitizer.bypassSecurityTrustHtml(item.content)"></p>
+						</div>
+					</div>
+				</div>
+			</section>
+		</div>
+    </div>
+
+
+    <!-- start review_rating Modal -->
+    <div class="modal fade global_popup" id="reviewModal" tabindex="-1">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content border-0 rounded-0 form_filed">
+                <div class="modal-header">
+                    <h4 class="modal-title">Review and Rating</h4>
+                    <button type="button" class="btn close-btn close close-modal" data-dismiss="modal" aria-label="Close">
+                    	<span class="icon-cross" aria-hidden="true">&nbsp;</span>
+                    	<span class="icon-cross" aria-hidden="true">&nbsp;</span>
+                    </button>
+                </div>
+                <form [formGroup] = "reviewForm" (ngSubmit) = "addReview(reviewForm.value);" class="needs-validation" novalidate><!-- start of form -->
+                
+                <div class="modal-body">
+                	<div class="col-12 giveRating_div"><!-- start of giveRating_div -->
+                    	<p><span>Rate It</span></p>
+                        <ul id="emoji">
+                            <li *ngFor="let item of newReview;" (click)="selectRating(item.rate);">
+								<img *ngIf="item.selected" src="assets/images/emojis/emoji{{item.rate}}.png">
+								<img *ngIf="!(item.selected)" src="assets/images/emojis/emoji{{item.rate}}{{item.rate}}.png">
+							</li>
+                        </ul>
+                        
+                        <ul id="note">
+                            <li *ngFor="let item of newReview;" (click)="selectRating(item.rate);" [ngStyle]="{'color':item.color}">{{item.title}}</li>
+                        </ul>
+                        
+                        <div id="line">
+                        	<div id="dot"></div>
+                        </div>
+                    </div><!-- end of giveRating_div -->
+                    
+                	<div class="form-group select_box_1 col-xs-12 no-padding rinput"><!-- start of select_box -->
+						<select formControlName="title" class="form-control">
+							<option value="" title="Title">Select Title</option>
+							<option value="Affordable" title="Affordable">Affordable</option>
+							<option value="Average" title="Average">Average</option>
+							<option value="Awesome" title="Awesome">Awesome</option>
+							<option value="Brilliant" title="Brilliant">Brilliant</option>
+							<option value="Classy" title="Classy">Classy</option>
+							<option value="Excellent" title="Excellent">Excellent</option>
+							<option value="Exotic" title="Exotic">Exotic</option>
+							<option value="Okay" title="Okay">Okay</option>
+							<option value="Sensual" title="Sensual">Sensual</option>
+							<option value="Soothing" title="Soothing">Soothing</option>
+						</select>
+					</div><!-- end of select_box -->
+                
+					<div class="form-group col-xs-12 no-padding rinput"><!-- start of textarea -->
+						<textarea class="form-control" formControlName="description" cols="2"></textarea>
+						<span *ngIf="reviewForm.controls.description.invalid" class="filed_name">Write here*</span>
+						<span *ngIf="reviewForm.controls.description.valid" class="filed_name complete_filled">Write here*</span>
+					</div><!-- end of textarea -->
+					<div class="form-group"><p [ngClass]="{'':reviewStatus === 0,'text-danger':reviewStatus === 1,'text-success':reviewStatus === 2}" [innerHTML]="sanitizer.bypassSecurityTrustHtml(reviewMsg)"></p></div>
+                </div>
+                <div class="modal-footer m-auto border-0 p-2">
+					<button type="submit" class="btn my-btn checkout_btn from-left" [disabled]="!reviewForm.valid">Submit</button>
+                </div>
+                
+                </form><!-- end of form -->
+            </div>
+        </div>
+    </div>
+    <!-- end confirmation Modal -->
