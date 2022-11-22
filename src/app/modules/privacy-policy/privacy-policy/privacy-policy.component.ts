@@ -8,13 +8,11 @@ import { PagesService } from './../../../_services/pb/pages.service';
   styleUrls: ['./../../../../assets/css/static_page.css','./privacy-policy.component.css']
 })
 export class PrivacyPolicyComponent implements OnInit {
-	company = {};
+	company;
 	constructor(private config: Myconfig, private pages: PagesService ) { }
-
 	ngOnInit() {
-		this.config.scrollToTop();
-		let infoData = this.pages.getCompanyData();
-		this.company = infoData['company'];
+		this.config.scrollToBottom(10,10);
+		this.company = this.pages.getCompanyData()['company'];
 	}
 
 }

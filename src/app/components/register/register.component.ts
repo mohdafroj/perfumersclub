@@ -17,7 +17,7 @@ import { ToastrService } from 'ngx-toastr';
   encapsulation: ViewEncapsulation.None
 })
 export class RegisterComponent implements OnInit {
-	registerForm:FormGroup;
+	registerForm;
 	myFormData:any;
 	isStep = 1;
 	tokenForAccount = '';
@@ -120,8 +120,8 @@ export class RegisterComponent implements OnInit {
 				if( productId != null ){
 					formData.productId = productId;
 				}				
-				this.customer.signUp(formData).subscribe(
-					res => {
+				this.customer.signUp(formData).subscribe({
+					next: (res) => {
 						//console.log(res);
 						this.serverRequest = true;
 						if ( res.status ) {
@@ -150,7 +150,7 @@ export class RegisterComponent implements OnInit {
 							}
 						}
 					},
-					(err: HttpErrorResponse) => {
+					error: (err) => {
 						this.serverRequest = true;
 						this.resObj['otpClass'] = 'text-danger';
 						if(err.error instanceof Error){
@@ -159,7 +159,7 @@ export class RegisterComponent implements OnInit {
 							this.resObj['message'] = 'Server error: There are some server issue!';
 						}
 					}
-				);
+				});
 			}			
 		}
 		return true;
@@ -181,8 +181,8 @@ export class RegisterComponent implements OnInit {
 		this.registerForm.controls.otp.setValue('', {});
 		if( this.serverRequest ){
 			this.serverRequest = false;
-			this.customer.signUp(this.myFormData).subscribe(
-				(res)=> {
+			this.customer.signUp(this.myFormData).subscribe({
+				next: (res)=> {
 					this.serverRequest = true;
 					if(res.status){
 						this.resObj['otpMessage'] = '';
@@ -194,7 +194,7 @@ export class RegisterComponent implements OnInit {
 						this.resObj['message'] = res.message;
 					}
 				},
-				(err: HttpErrorResponse) => {
+				error: (err) => {
 					this.serverRequest = true;
 					this.resObj['otpClass'] = 'text-danger';
 					if(err.error instanceof Error){
@@ -203,7 +203,7 @@ export class RegisterComponent implements OnInit {
 						this.resObj['message'] = 'Server error: There are some server issue!';
 					}
 				}
-			);
+			});
 		}
 	}
 

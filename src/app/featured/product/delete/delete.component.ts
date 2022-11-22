@@ -14,11 +14,11 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./delete.component.css']
 })
 export class DeleteComponent implements OnInit {
-	@ViewChild('hideDeleteMiniCartModal', {static: false}) hideDeleteMiniCartModal: ElementRef;
+	@ViewChild('hideDeleteMiniCartModal', {static: false}) hideDeleteMiniCartModal;
     cartId = 0;
 	userId = 0;
   confimMsg = '';
-  subscription: Subscription;
+  subscription;
    constructor(
     private router : Router,
 	private toastr:ToastrService, 
@@ -45,8 +45,8 @@ export class DeleteComponent implements OnInit {
 		this.confimMsg = 'Waiting...';
 		if(this.userId > 0){
 			let myCart: any = this.customer.getCart();
-			this.store.removeCart(this.cartId).subscribe(
-				res => {
+			this.store.removeCart(this.cartId).subscribe({
+				next: (res) => {
 					if( res.status ){
 						this.customer.setCart(res.data.cart);
 						this.hideDeleteMiniCartModal.nativeElement.click();
@@ -62,10 +62,10 @@ export class DeleteComponent implements OnInit {
 						this.confimMsg = res.message;
 					}
 				},
-				(err: HttpErrorResponse) => {
+				error: (err) => {
 					this.confimMsg = "Sorry, there are some app issue!";
 				}
-			);
+			});
 		}else{
 			this.router.navigate(['/customer/login']);
 		}

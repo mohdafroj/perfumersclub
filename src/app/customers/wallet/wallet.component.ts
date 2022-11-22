@@ -27,7 +27,7 @@ export class WalletComponent implements OnInit {
 		private customer: CustomerService
 	) {
 		route.data.subscribe(res =>{
-			titleService.setTitle(res.title);
+			titleService.setTitle(res['title']);
 		});
 	}
 
@@ -40,31 +40,27 @@ export class WalletComponent implements OnInit {
 		let prms = new HttpParams();
 		let userId:number = this.customer.getId();
 		prms = prms.set('userId', `${userId}`);
-		this.customer.getWalletDetails(prms).subscribe(
-			res => {
+		this.customer.getWalletDetails(prms).subscribe({
+			next: (res) => {
 				if(res.status){
 					this.cash		=	res.data.cash;
 					this.walletTotal = res.data.walletTotal;
 				}
 			},
-			(err: HttpErrorResponse) => {
-				console.log("Server Isse!");
-			}
-		);
+			error: (err) => {}
+		});
 	}
 	
 	getWalletTransactions(){
 		let prms = new HttpParams();
 		let userId:number = this.customer.getId();
 		prms = prms.set('userId', `${userId}`);
-		this.customer.getWalletTransactions(prms).subscribe(
-			res => {
+		this.customer.getWalletTransactions(prms).subscribe({
+			next: (res) => {
 				this.dataList = res.data;
 			},
-			(err: HttpErrorResponse) => {
-				console.log("Server Isse!");
-			}
-		);
+			error: (err) => {}
+		});
 	}
 	
 	

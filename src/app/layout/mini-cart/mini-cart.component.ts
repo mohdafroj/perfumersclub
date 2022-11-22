@@ -1,7 +1,5 @@
 import { Component, OnInit, Output, EventEmitter, ElementRef, HostListener, ViewEncapsulation  } from '@angular/core';
 import { DomSanitizer } 			from '@angular/platform-browser';
-import { DOCUMENT } from '@angular/common';
-import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { CustomerService } from '../../_services/pb/customer.service';
 import { StoreService } from './../../_services/pb/store.service';
@@ -18,7 +16,7 @@ export class MiniCartComponent implements OnInit {
 	userId = 0;
 	total = 0;
 	cartLength = 0;
-	curencyLogo:string  = '$';
+	curencyLogo:string  = '';
 	topScrollClass:string 		= 'affix-top';
 	sanitizer:any;
 	constructor(

@@ -35,8 +35,8 @@ export class DealOfTheDayComponent implements OnInit {
 	resultMsg = '';
 	resultStatus = 0;
 	userId = 0;
-	basePath = [];
-	customerCart = [];
+	basePath:any = [];
+	customerCart:any = [];
 	sliderIndex = 0;
 	selectedTab = 'A';
 	selectedIndex = 0;
@@ -109,8 +109,8 @@ export class DealOfTheDayComponent implements OnInit {
 		}
 		prms = prms.append('offerCoupon', this.coupon);
 		prms = prms.append('categoryId', '12');
-		this.product.getProductByCategory(prms).subscribe(
-            res => {
+		this.product.getProductByCategory(prms).subscribe({
+            next: (res) => {
                 if(res.status){
 					this.pack1Price = res.data['pack1Price'];
 					this.productsPack1 = res.data['products'];
@@ -122,17 +122,18 @@ export class DealOfTheDayComponent implements OnInit {
 					}
 				}
 				this.resultMsg = res.message;
-				this.resultStatus = 1;
             },
-            (err: HttpErrorResponse) => {
+            error: (err: HttpErrorResponse) => {
                 if(err.error instanceof Error){
 					this.resultMsg = err.error.message;
                 }else{
 					this.resultMsg = JSON.stringify(err.error);
                 }
+            },
+			complete: () => {
 				this.resultStatus = 1;
-            }
-        );
+			},
+        });
     }
 
 	genderFilter (gender) {
@@ -141,27 +142,27 @@ export class DealOfTheDayComponent implements OnInit {
 		let products = [];
 		switch ( this.productType ) {
 			case 'pack-3': 
-				unisex = this.productsPack3.filter( (item) => { return item.gender == 'unisex'; }, '');
+				unisex = this.productsPack3.filter( (item) => { return item['gender'] == 'unisex'; }, '');
 				break;
 			case 'pack-2': 
-				unisex = this.productsPack2.filter( (item) => { return item.gender == 'unisex'; }, '');
+				unisex = this.productsPack2.filter( (item) => { return item['gender'] == 'unisex'; }, '');
 				break;
 			default: 
-				unisex = this.productsPack1.filter( (item) => { return item.gender == 'unisex'; }, '');
+				unisex = this.productsPack1.filter( (item) => { return item['gender'] == 'unisex'; }, '');
 		}
 		if ( this.gender == 'unisex' ) {
-			products = this.productsPack1.filter( (item) => { return item.gender == 'mfemale'; }, '');
+			products = this.productsPack1.filter( (item) => { return item['gender'] == 'mfemale'; }, '');
 			this.filterProducts = products.concat(unisex);
 		} else {
 			switch ( this.productType ) {
 				case 'pack-3': 
-					products = this.productsPack3.filter( (item) => { return item.gender == this.gender; }, this.gender);
+					products = this.productsPack3.filter( (item) => { return item['gender'] == this.gender; }, this.gender);
 					break;
 				case 'pack-2':
-					products = this.productsPack2.filter( (item) => { return item.gender == this.gender; }, this.gender);
+					products = this.productsPack2.filter( (item) => { return item['gender'] == this.gender; }, this.gender);
 					break;
 				default: 
-					products = this.productsPack1.filter( (item) => { return item.gender == this.gender; }, this.gender);
+					products = this.productsPack1.filter( (item) => { return item['gender'] == this.gender; }, this.gender);
 			}
 			this.filterProducts = products.concat(unisex);
 		}
@@ -179,8 +180,8 @@ export class DealOfTheDayComponent implements OnInit {
 	addIntoCart (item) {
 		if ( this.userId > 0 ) {
 			let formData = {itemId: item.id, quantity: 1};
-			this.store.addToCart(formData).subscribe(
-				res => {
+			this.store.addToCart(formData).subscribe({
+				next: (res) => {
 					if ( res.data.cart ) { this.customer.setCart(res.data.cart); }
 					if( res.status ){								
 						this.toastr.success(res.message);
@@ -191,10 +192,10 @@ export class DealOfTheDayComponent implements OnInit {
 					let myCart = this.customer.getFromCart();
 					this.customerCart = myCart['shopping']['cart'].map( (item) => { return item.id; });
 				},
-				(err: HttpErrorResponse) => {
+				error: (err) => {
 					this.toastr.error("Sorry, there are some app issue!");
 				}
-			);
+			});
 		} else {
 			localStorage.setItem('productId', item.id);
 			this.router.navigate(['/registration']);

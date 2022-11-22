@@ -31,20 +31,20 @@
                                 <tr *ngFor="let item of shoppingCart; let i = index;"><!-- start of tr -->
                                     <td scope="row">
                                         <span class="product_img"><!-- start of image -->
-                                            <img [src]="item.images[0].url" [alt]="item.name" [title]="item.name" width="70" class="img-fluid">
+                                            <img [src]="item['images'][0]['url']" [alt]="item['name']" [title]="item['name']" width="70" class="img-fluid">
                                         </span><!-- end of image -->
                                         <h5><!-- start of image_detail -->
-                                        	<a [routerLink]="['/', item.url_key]" class="text-dark d-inline-block align-middle">{{item.title}}</a>
+                                        	<a [routerLink]="['/', item['url_key']]" class="text-dark d-inline-block align-middle">{{item['title']}}</a>
                                         </h5><!-- end of image_detail -->
                                     </td>
-                                    <td data-title="Price" class="align-middle tableProductPrice"><label [innerHTML]="sanitizer.bypassSecurityTrustHtml(cartCurrency)"></label>{{item.price * item.cart_quantity | number:'2.2-2'}} <del *ngIf="( (item['discount']['original'] != undefined) && (item['discount']['original'] > item.price) )">₹{{item.discount.original * item.cart_quantity | number:'2.2-2'}}</del></td>
-                                    <td *ngIf="item.price > 0" data-title="Quantity" class="align-middle qtyNum">
-                                    	<span class="minus bg-light" (click)="updateQuantityInCart({id: item.id, shopping: 'cart', index: i, quantity: item.cart_quantity, counter: 0});">-</span>
-                                        <input type="number" class="count" min="1" [(ngModel)]="item.cart_quantity" readonly>
-                                        <span class="plus bg-light" (click)="updateQuantityInCart({id: item.id, shopping: 'cart', index: i, quantity: item.cart_quantity, counter: 1});">+</span>
+                                    <td data-title="Price" class="align-middle tableProductPrice"><label [innerHTML]="sanitizer.bypassSecurityTrustHtml(cartCurrency)"></label>{{item['price'] * item['cart_quantity'] | number:'2.2-2'}} <del *ngIf="( (item['discount']['original'] != undefined) && (item['discount']['original'] > item['price']) )">₹{{item['discount']['original'] * item['cart_quantity'] | number:'2.2-2'}}</del></td>
+                                    <td *ngIf="item['price'] > 0" data-title="Quantity" class="align-middle qtyNum">
+                                    	<span class="minus bg-light" (click)="updateQuantityInCart({id: item['id'], shopping: 'cart', index: i, quantity: item['cart_quantity'], counter: 0});">-</span>
+                                        <input type="number" class="count" min="1" [value]="item['cart_quantity']" readonly>
+                                        <span class="plus bg-light" (click)="updateQuantityInCart({id: item['id'], shopping: 'cart', index: i, quantity: item['cart_quantity'], counter: 1});">+</span>
                                     </td>
-                                    <td *ngIf="item.price == 0" data-title="Quantity" class="align-middle qtyNum">
-                                        {{item.cart_quantity}}
+                                    <td *ngIf="item['price'] == 0" data-title="Quantity" class="align-middle qtyNum">
+                                        {{item['cart_quantity']}}
                                     </td>
                                     <td data-title="" class="align-middle cartProductRemoveBtn">
                                     	<button type="button" (click)="removeItemFromCartPopup(item);" class="btn btn-link p-0 text-muted" data-toggle="modal" data-target="#confirmModal"><i class="fas fa-trash"></i></button>
@@ -54,25 +54,25 @@
                                 <tr *ngFor="let item of shoppingPack; let i = index;"><!-- start of tr -->
                                     <td scope="row">
                                         <span class="product_img"><!-- start of image -->
-                                            <img [src]="item.image" [alt]="item.title" width="70" class="img-fluid">
+                                            <img [src]="item['image']" [alt]="item['title']" width="70" class="img-fluid">
                                         </span><!-- end of image -->
                                         
                                         <h5><!-- start of image_detail -->
-											<a [routerLink]="['/', item.title]" class="text-dark d-inline-block align-middle">{{item.title}}</a>
+											<a [routerLink]="['/', item['title']]" class="text-dark d-inline-block align-middle">{{item['title']}}</a>
                                             
                                             <div class="Pack_image"><!-- start of pack_of_images -->
-                                                <span *ngFor="let prod of item.products"><!-- start of image_1 -->
+                                                <span *ngFor="let prod of item['products']"><!-- start of image_1 -->
                                                     <img [src]="prod.image" [alt]="prod.title" width="70" [title]="prod.title" class="img-fluid" />
                                                 </span><!-- end of image_1 -->
                                             </div><!-- end of pack_of_images -->
                                             
                                         </h5><!-- end of image_detail -->
                                     </td>
-                                    <td data-title="Price" class="align-middle"><label [innerHTML]="sanitizer.bypassSecurityTrustHtml(cartCurrency)"></label>{{item.price * item.cart_quantity | number:'2.2-2'}}</td>
+                                    <td data-title="Price" class="align-middle"><label [innerHTML]="sanitizer.bypassSecurityTrustHtml(cartCurrency)"></label>{{item['price'] * item['cart_quantity'] | number:'2.2-2'}}</td>
                                     <td data-title="Quantity" class="align-middle qtyNum">
-                                    	<span class="minus bg-light" (click)="updateQuantityInCart({shopping: 'pack', index: i, quantity: item.cart_quantity, counter: -1});">-</span>
-                                        <input type="number" class="count" min="1" [(ngModel)]="item.cart_quantity" readonly />
-                                        <span class="plus bg-light" (click)="updateQuantityInCart({shopping: 'pack', index: i, quantity: item.cart_quantity, counter: 1});">+</span>
+                                    	<span class="minus bg-light" (click)="updateQuantityInCart({shopping: 'pack', index: i, quantity: item['cart_quantity'], counter: -1});">-</span>
+                                        <input type="number" class="count" min="1" [value]="item['cart_quantity']" readonly>
+                                        <span class="plus bg-light" (click)="updateQuantityInCart({shopping: 'pack', index: i, quantity: item['cart_quantity'], counter: 1});">+</span>
                                     </td>
                                     <td data-title="Remove" class="align-middle cartProductRemoveBtn">
                                     	<button type="button" (click)="removeItemFromCartPopup(item);" class="btn btn-link p-0 text-muted" data-toggle="modal" data-target="#confirmModal"><i class="fas fa-trash"></i></button>
@@ -186,7 +186,7 @@
 										</label><!-- end of label -->
 									</div><!-- end of product_div -->
 									<div [hidden]="addressId != -1" class="col-md-12 col-12"><!-- start of product_div -->
-										<p [ngClass]="addressResponse.textClass"  [innerHTML]="addressResponse.message"></p>
+										<p [ngClass]="addressResponse['textClass']"  [innerHTML]="addressResponse['message']"></p>
 									</div><!-- end of product_div -->
 								</div><!-- end of address_form -->
 								
@@ -230,7 +230,7 @@
 										<div class="form-group col-sm-6 col-12">
 											<input type="text" class="form-control" formControlName="state" placeholder="Please enter state" list="stateList" required>
 											<datalist id="stateList">
-												<option *ngFor="let item of addresses.states" [value]="item.title">
+												<option *ngFor="let item of addresses['states']" [value]="item.title">
 											</datalist>
 										</div>
 									
@@ -245,7 +245,7 @@
 										</div>
 										
 										<div *ngIf="addressResponse['message']" class="form-group col-sm-6 col-12 errorMszShow">
-											<p [ngClass]="addressResponse.textClass"  [innerHTML]="addressResponse.message"></p>
+											<p [ngClass]="addressResponse['textClass']"  [innerHTML]="addressResponse['message']"></p>
 										</div>
 										
 										<div class="form-group col-12 checkoutBtn"><!-- start of button -->
@@ -263,15 +263,15 @@
 								<div class="radio_div row paymentMethodDiv">
 									<div *ngFor="let item of paymentMethodData" class="form-check col-sm-6 col-12">
 										<label class="toggle">
-											<input type="radio" id="pg-{{item.id}}" (change)="onSelectionChange(item.id);" [value]="item.id" formControlName="paymentMethod"> <span class="label-text">{{item.title}}</span><span [innerHTML]="sanitizer.bypassSecurityTrustHtml(item.message)"></span>
+											<input type="radio" id="pg-{{item['id']}}" (change)="onSelectionChange(item['id']);" [value]="item['id']" formControlName="paymentMethod"> <span class="label-text">{{item['title']}}</span><span [innerHTML]="sanitizer.bypassSecurityTrustHtml(item['message'])"></span>
 										</label>
 									</div>
 								</div>
 								
 								<div class="d-flex p-2 bg-light">
 									<address *ngIf="selectedAddress['email']">
-										<strong>{{selectedAddress.email}}</strong><br />
-										<strong>{{selectedAddress.firstname+' '+selectedAddress.lastname}}</strong>, {{selectedAddress.address+', '+selectedAddress.city+', '+selectedAddress.state+', '+selectedAddress.country}}, <strong>{{selectedAddress.pincode}}</strong>
+										<strong>{{selectedAddress['email']}}</strong><br />
+										<strong>{{selectedAddress['firstname']+' '+selectedAddress['lastname']}}</strong>, {{selectedAddress['address']+', '+selectedAddress['city']+', '+selectedAddress['state']+', '+selectedAddress['country']}}, <strong>{{selectedAddress['pincode']}}</strong>
 									</address>
 								</div>
 								<div class="d-flex">
@@ -315,9 +315,9 @@
  > 0))" class="col-sm-12 col-xs-12 add_voucher">
 								<form [formGroup]="couponForm" class="col-xs-12 no-padding">
 									<ul class="list-unstyled">
-										<li *ngFor="let item of cartCouponList;" (click)="addCoupon(item.code);" class="custom-control custom-radio radioSection d-flex justify-content-between">
+										<li *ngFor="let item of cartCouponList;" (click)="addCoupon(item['code']);" class="custom-control custom-radio radioSection d-flex justify-content-between">
 											<input type="radio" formControlName="inCouponCode" class="custom-control-input">
-											<label class="custom-control-label" [innerHTML]="sanitizer.bypassSecurityTrustHtml(item.message)"></label>
+											<label class="custom-control-label" [innerHTML]="sanitizer.bypassSecurityTrustHtml(item['message'])"></label>
 										</li>
 									</ul>
 								</form>
@@ -523,13 +523,13 @@
 						<div class="product-grid3">
 							<div class="product-image3"><!-- start of image -->
 								<span class="image_part"><!-- start of single_image -->
-									<img [src]="item.images.url" [alt]="item.name" [title]="item.name" class="img-fluid">
+									<img [src]="item['images']['url']" [alt]="item['name']" [title]="item['name']" class="img-fluid">
 								</span><!-- end of single_image -->
 							</div><!-- end of image -->
 							
 							<div class="product-content"><!-- start of content -->
-								<h3 class="title"><span class="title_content">{{item.name}}</span></h3>
-								<button type="button" (click)="addBoosterProduct(item.id);" class="btn my-btn cart_btn from-left" data-dismiss="modal" aria-label="Close">
+								<h3 class="title"><span class="title_content">{{item['name']}}</span></h3>
+								<button type="button" (click)="addBoosterProduct(item['id']);" class="btn my-btn cart_btn from-left" data-dismiss="modal" aria-label="Close">
 									Claim
 								</button>
 							</div><!-- end of content -->

@@ -1,10 +1,37 @@
 import 'zone.js/dist/zone-node';
+import 'localstorage-polyfill';
+import { sessionStorage } from 'sessionstorage';
 
 import {APP_BASE_HREF} from '@angular/common';
 import {ngExpressEngine} from '@nguniversal/express-engine';
 import * as express from 'express';
 import {existsSync} from 'fs';
 import {join} from 'path';
+
+
+import {LocalStorage} from 'node-localstorage' 
+
+const domino = require("domino");
+const fs = require("fs");
+const path = require("path");
+const templateA = fs.readFileSync(path.join("dist/perfumersclub/browser", "index.html")).toString();
+const win = domino.createWindow(templateA);
+win.object = Object;
+win.math = Math;
+global["window"] = win;
+global["document"] = win.document;
+global["location"] = win.location;
+global["branch"] = null;
+global["object"] = win.object;
+global["HTMLElement"] = win.HTMLElement;
+global["navigator"] = win.navigator;
+//global["localStorage"] = localStorage;
+global["sessionStorage"] = sessionStorage;
+global["Event"] = win.Event;
+global["Event"]["prototype"] = win.Event.prototype;
+global["dataLayer"] = [];
+
+localStorage = new LocalStorage('./data');
 
 import {AppServerModule} from './src/main.server';
 
@@ -38,7 +65,7 @@ export function app(): express.Express {
 }
 
 function run(): void {
-  const port = process.env['PORT'] || 4000;
+  const port = process.env['PORT'] || 3000;
 
   // Start up the Node server
   const server = app();

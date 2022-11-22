@@ -8,10 +8,10 @@ import { DataService } from './../../../_services/data.service';
   styleUrls: ['./popup-product.component.css']
 })
 export class PopupProductComponent implements OnInit, OnDestroy {
-	subscription: Subscription;
-    result = [];
+	subscription;
+    result:any = [];
 	nguInputs;
-	nguThirdToken: string;
+	nguThirdToken;
 	
     constructor(
 		private dataService: DataService

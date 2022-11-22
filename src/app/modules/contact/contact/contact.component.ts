@@ -13,7 +13,7 @@ import { PagesService } from './../../../_services/pb/pages.service';
 	]
 })
 export class ContactComponent implements OnInit {
-  rForm:FormGroup;
+  rForm;
   msg:string = '';
   company;
   constructor( private config: Myconfig, private pages: PagesService ) { 
@@ -21,7 +21,7 @@ export class ContactComponent implements OnInit {
 
   ngOnInit() {
 	this.company = {'name':'','add':'','city':'','state':'','country':'','pin':'','code':'','phone':'','email':'','website':'','start_year':''};
-	this.config.scrollToTop();
+	this.config.scrollToBottom(10,10);
     this.rForm = new FormGroup ({
       firstname: new FormControl("", Validators.compose([Validators.required,Validators.pattern(this.config.ALPHA_SPACE_REGEXP),Validators.minLength(3)]) ),
       lastname: new FormControl("", Validators.compose([Validators.required,Validators.pattern(this.config.ALPHA_SPACE_REGEXP),Validators.minLength(3)]) ),
@@ -35,8 +35,8 @@ export class ContactComponent implements OnInit {
   
   contactUs ( formData ) {
     this.msg = 'Wait...';
-    this.pages.contactUs(formData).subscribe(
-      res => {
+    this.pages.contactUs(formData).subscribe({
+      next: (res) => {
         if(res.status){
 			this.rForm = new FormGroup ({
 				firstname: new FormControl("", Validators.compose([Validators.required,Validators.pattern(this.config.ALPHA_SPACE_REGEXP),Validators.minLength(3)]) ),
@@ -48,14 +48,14 @@ export class ContactComponent implements OnInit {
         }
         this.msg = res.message;
       },
-      (err: HttpErrorResponse) => {
+      error: (err) => {
         if(err.error instanceof Error){
           this.msg = 'Client error: '+err.error.message;
         }else{
           this.msg = 'Server error: '+JSON.stringify(err.error);
         }
       }
-    );
+    });
   }
   
   upperToLower(event){

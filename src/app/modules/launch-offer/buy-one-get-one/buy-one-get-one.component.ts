@@ -15,8 +15,8 @@ import { StoreService } from './../../../_services/pb/store.service';
   styleUrls: ['./buy-one-get-one.component.css']
 })
 export class BuyOneGetOneComponent implements OnInit {
-	@ViewChild('deleteAddListModal', {static: false}) deleteAddListModal: ElementRef;
-	@ViewChild('deleteAddProductModal', {static: false}) deleteAddProductModal: ElementRef;
+	@ViewChild('deleteAddListModal', {static: false}) deleteAddListModal: any;
+	@ViewChild('deleteAddProductModal', {static: false}) deleteAddProductModal: any;
 	sanitizer;
 	hours = '00';
 	minutes = '00';
@@ -33,7 +33,7 @@ export class BuyOneGetOneComponent implements OnInit {
 	resultMsg = '';
 	resultStatus = 0;
 	userId = 0;
-	customerCart = [];
+	customerCart:any = [];
 	sliderIndex = 0;
 	selectedTab = 'A';
 	sliderConfig = {};
@@ -86,8 +86,8 @@ export class BuyOneGetOneComponent implements OnInit {
 		this.resultStatus   = 0;
 		let prms = new HttpParams();
 		prms = prms.append('offerCoupon', '');
-		this.product.getProductBuynow(prms).subscribe(
-            res => {
+		this.product.getProductBuynow(prms).subscribe({
+            next: (res) => {
                 if(res.status){
 					this.pack1Price = res.data['pack1Price'];
 					this.productsPack1 = res.data['productsPack1'];
@@ -96,17 +96,18 @@ export class BuyOneGetOneComponent implements OnInit {
 					this.genderFilter(this.gender);
 				}
 				this.resultMsg = res.message;
-				this.resultStatus = 1;
             },
-            (err: HttpErrorResponse) => {
+            error: (err) => {
                 if(err.error instanceof Error){
 					this.resultMsg = err.error.message;
                 }else{
 					this.resultMsg = JSON.stringify(err.error);
                 }
+            },
+			complete: () => {
 				this.resultStatus = 1;
-            }
-        );
+			}
+        });
     }
 
 	genderFilter (gender) {
@@ -115,27 +116,27 @@ export class BuyOneGetOneComponent implements OnInit {
 		let products = [];
 		switch ( this.productType ) {
 			case 'pack-3': 
-				unisex = this.productsPack3.filter( (item) => { return item.gender == 'unisex'; }, '');
+				unisex = this.productsPack3.filter( (item) => { return item['gender'] == 'unisex'; }, '');
 				break;
 			case 'pack-2': 
-				unisex = this.productsPack2.filter( (item) => { return item.gender == 'unisex'; }, '');
+				unisex = this.productsPack2.filter( (item) => { return item['gender'] == 'unisex'; }, '');
 				break;
 			default: 
-				unisex = this.productsPack1.filter( (item) => { return item.gender == 'unisex'; }, '');
+				unisex = this.productsPack1.filter( (item) => { return item['gender'] == 'unisex'; }, '');
 		}
 		if ( this.gender == 'unisex' ) {
-			products = this.productsPack1.filter( (item) => { return item.gender == 'mfemale'; }, '');
+			products = this.productsPack1.filter( (item) => { return item['gender'] == 'mfemale'; }, '');
 			this.filterProducts = products.concat(unisex);
 		} else {
 			switch ( this.productType ) {
 				case 'pack-3': 
-					products = this.productsPack3.filter( (item) => { return item.gender == this.gender; }, this.gender);
+					products = this.productsPack3.filter( (item) => { return item['gender'] == this.gender; }, this.gender);
 					break;
 				case 'pack-2':
-					products = this.productsPack2.filter( (item) => { return item.gender == this.gender; }, this.gender);
+					products = this.productsPack2.filter( (item) => { return item['gender'] == this.gender; }, this.gender);
 					break;
 				default: 
-					products = this.productsPack1.filter( (item) => { return item.gender == this.gender; }, this.gender);
+					products = this.productsPack1.filter( (item) => { return item['gender'] == this.gender; }, this.gender);
 			}
 			this.filterProducts = products.concat(unisex);
 		}
@@ -154,8 +155,8 @@ export class BuyOneGetOneComponent implements OnInit {
 		if ( this.userId > 0 ) {
 			let prodImage = ( item['images'][0]['large'] ) ? item['images'][0]['large'] : '';
 			let formData = {itemId: item.id, quantity: 1};
-			this.store.addToCart(formData).subscribe(
-				res => {
+			this.store.addToCart(formData).subscribe({
+				next: (res) => {
 					if ( res.data.cart ) { this.customer.setCart(res.data.cart); }
 					if( res.status ){						
 						this.toastr.success(res.message);
@@ -183,10 +184,10 @@ export class BuyOneGetOneComponent implements OnInit {
 					let myCart = this.customer.getFromCart();
 					this.customerCart = myCart['shopping']['cart'].map( (item) => { return item.id; });
 				},
-				(err: HttpErrorResponse) => {
+				error: (err) => {
 					this.toastr.error("Sorry, there are some app issue!");
 				}
-			);
+			});
 		} else {
 			localStorage.setItem('productId', item.id);
 			this.router.navigate(['/registration']);
@@ -195,8 +196,8 @@ export class BuyOneGetOneComponent implements OnInit {
 	
 	removeItemFromCart (productId) {
 		if ( productId >  0 ) {
-			this.store.removeCart(productId).subscribe(
-				res => {
+			this.store.removeCart(productId).subscribe({
+				next: (res) => {
 					if ( res.data.cart ) { this.customer.setCart(res.data.cart); }
 					if( res.status ){
 						let myCart = this.customer.getFromCart();
@@ -205,10 +206,10 @@ export class BuyOneGetOneComponent implements OnInit {
 						//this.track.removeFromCart(this.removeItem);
 					}
 				},
-				(err: HttpErrorResponse) => {
+				error: (err) => {
 					this.toastr.warning("Sorry, there are some app issue!");
 				}
-			);
+			});
 		}
 	}
 

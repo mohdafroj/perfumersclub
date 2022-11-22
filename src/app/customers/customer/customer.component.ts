@@ -58,8 +58,8 @@ export class CustomerComponent implements OnInit {
 			this.serverRequest = true;
 			let formData:FormData = new FormData();
 			formData.append('fileToUpload',file,file.name);
-			this.customer.updatePicture(formData).subscribe(
-				res => {
+			this.customer.updatePicture(formData).subscribe({
+				next: (res) => {
 					if(res.status){
 						this.picUrl = res.data.image;
 						this.customer.setImage(this.picUrl);
@@ -70,12 +70,15 @@ export class CustomerComponent implements OnInit {
 					this.serverRequest = false;
 					this.elem.nativeElement.querySelector("#inputGroupFile01").value = '';
 				},
-				(err: HttpErrorResponse) => {
+				error: (err) => {
 					this.serverRequest = false;
 					this.elem.nativeElement.querySelector("#inputGroupFile01").value = '';
 					this.toastr.error("Server Isse!");
+				},
+				complete: () => {
+					this.serverRequest = false;
 				}
-			);
+			});
 		}
 	}
 
@@ -83,8 +86,8 @@ export class CustomerComponent implements OnInit {
 		this.serverRequest = true;
 		let formData:FormData = new FormData();
 		formData.append('removePic', '1');
-		this.customer.updatePicture(formData).subscribe(
-			res => {
+		this.customer.updatePicture(formData).subscribe({
+			next: (res) => {
 				if(res.status){
 					this.customer.setImage('');
 					this.picUrl = this.customer.getImage();
@@ -94,11 +97,13 @@ export class CustomerComponent implements OnInit {
 				}
 				this.serverRequest = false;
 			},
-			(err: HttpErrorResponse) => {
-				this.serverRequest = false;
+			error: (err) => {
 				this.toastr.error("Server Isse!");
+			},
+			complete: () => {
+				this.serverRequest = false;
 			}
-		);
+		});
 	}
 	
 	customerLogout () {

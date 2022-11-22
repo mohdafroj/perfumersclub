@@ -14,11 +14,11 @@ import { StoreService } from './../../../_services/pb/store.service';
   styleUrls: ['./related-product.component.css']
 })
 export class RelatedProductComponent implements OnInit {
-	subscription: Subscription;
-    result = [];
+	subscription;
+    result:any = [];
 	userId = 0;
 	nguInputs;
-	nguThirdToken: string;
+	nguThirdToken;
 
     constructor (
 		private toastr:ToastrService, 
@@ -42,8 +42,8 @@ export class RelatedProductComponent implements OnInit {
 		localStorage.setItem('productId', itemId);
 		if( this.userId > 0 ){
 			let formData:any = {itemId:itemId,qty:1};
-			this.store.addToCart(formData).subscribe(
-				res => {
+			this.store.addToCart(formData).subscribe({
+				next: (res) => {
 					if( res.status ){
 						this.customer.setCart(res.data.cart);
 						for(let i of this.result){
@@ -61,10 +61,10 @@ export class RelatedProductComponent implements OnInit {
 						this.toastr.error(res.message);
 					}
 				},
-				(err: HttpErrorResponse) => {
+				error: (err) => {
 					this.toastr.error("Sorry, there are some app issue!");
 				}
-			);
+			});
 		}else{
 			this.router.navigate(['/customer/registration']);
 		}

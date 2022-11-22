@@ -1,40 +1,14 @@
-	<nav class="navbar navbar-expand-md navbar-light nav-top">		
+	<nav class="navbar navbar-expand-md navbar-light nav-top">
         <div class="container p-0">
 			<a class="navbar-brand" routerLink="/"><img src="assets/images/logo.svg" alt="Logo" class="img-fluid"></a>
-			<button id="menuToggle" (click)="actveMenu = !actveMenu;" class="cta navbar-toggler" [ngClass]="{'active': actveMenu, 'collapsed': !actveMenu}" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" [attr.aria-expanded]="actveMenu" aria-label="Toggle navigation">
+			<button id="menuToggle" (click)="menuToggle1();" class="cta navbar-toggler" [class]="{'active': actveMenu, 'collapsed': !actveMenu}" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" [attr.aria-expanded]="actveMenu" aria-label="Toggle navigation">
                 <span class="toggle-btn type1"></span>
             </button>
             <div class="navbar-collapse">
 			
 				<div class="mr-auto collapse navbar-collapse" id="navbarSupportedContent">
 					<ul class="navbar-nav nav_menu">
-						<!--li class="nav-item" (click)="menuToggle()">
-							<a class="nav-link my-btn checkout_btn from-left sticky-top" [routerLink]="['/','shopnow']">Shop Now</a>
-						</li>
-						<li *ngIf="windowWidth <= 766" class="nav-item" (click)="menuToggle()">
-							<a class="nav-link" [routerLink]="['/', 'shopnow']" [queryParams]="{type: config.categories.category1.key}">{{config.categories.category1.title}}</a>
-						</li>
-						<li *ngIf="windowWidth <= 766" class="nav-item" (click)="menuToggle()">
-							<a class="nav-link" [routerLink]="['/', 'shopnow']" [queryParams]="{type: config.categories.category2.key}">{{config.categories.category2.title}}</a>
-						</li>
-						<li *ngIf="windowWidth <= 766" class="nav-item" (click)="menuToggle()">
-							<a class="nav-link" [routerLink]="['/', 'shopnow']" [queryParams]="{type: config.categories.category3.key}">{{config.categories.category3.title}}</a>
-						</li>
-						<li *ngIf="windowWidth <= 766" class="nav-item" (click)="menuToggle()">
-							<a class="nav-link" [routerLink]="['/', 'shopnow']" [queryParams]="{type: config.categories.category4.key}">{{config.categories.category4.title}}</a>
-						</li>
-						<li *ngIf="windowWidth <= 766" class="nav-item" (click)="menuToggle()">
-							<a class="nav-link" [routerLink]="['/', 'shopnow']" [queryParams]="{type: config.categories.category5.key}">{{config.categories.category5.title}}</a>
-						</li>
-						<li *ngIf="windowWidth <= 766" class="nav-item" (click)="menuToggle()">
-							<a class="nav-link" [routerLink]="['/', 'shopnow']" [queryParams]="{type: config.categories.category6.key}">{{config.categories.category6.title}}</a>
-						</li>
-						<li class="nav-item" (click)="menuToggle()">
-							<a class="nav-link" routerLink="/scent-match">Scent Match</a>
-						</li>
-						<li class="nav-item" *ngIf="userId > 0" (click)="menuToggle()">
-							<a class="nav-link" routerLink="/customer/refer-and-earn">Refer &amp; Earn</a>
-						</li-->
+						
 						<li *ngIf="userId > 0" class="nav-item profilePicSec" (click)="menuToggle()">
 							<a class="nav-link" [routerLink]="['/', 'customer', 'profile']">
 								<span>
@@ -94,15 +68,15 @@
 							
 							<div *ngFor="let item of shoppingCart;" class="d-flex border-top py-3"><!-- start of cart_row -->
 								<div class="pr-2"><!-- start of image_section -->
-									<a routerLink="/{{item.url_key}}">
-										<img [src]="item.images[0].url" [alt]="item.name" [title]="item.name" width="70" class="img-fluid">
+									<a routerLink="/{{item['url_key']}}">
+										<img [src]="item['images'][0]['url']" [alt]="item['name']" [title]="item['name']" width="70" class="img-fluid">
 									</a>
 								</div><!-- end of image_section -->
 
 								<div class="flex-grow-1"><!-- start of content_section -->
-									<a routerLink="/{{item.url_key}}" class="item-name d-block">{{item.name}}</a>
-									<span class="item-price"><label [innerHTML]="sanitizer.bypassSecurityTrustHtml(cartCurrency)"></label>{{item.price | number:'2.2-2'}}</span>
-									<span class="item-quantity">Quantity: {{item.cart_quantity}}</span>
+									<a routerLink="/{{item['url_key']}}" class="item-name d-block">{{item['name']}}</a>
+									<span class="item-price"><label [innerHTML]="sanitizer.bypassSecurityTrustHtml(cartCurrency)"></label>{{item['price'] | number:'2.2-2'}}</span>
+									<span class="item-quantity">Quantity: {{item['cart_quantity']}}</span>
 									<!--button type="button" (click)="removeItem(item.cart_id);" class="btn close-btn" data-toggle="modal" data-target="#confirmModal">
 										<span class="icon-cross">&nbsp;</span>
 										<span class="icon-cross">&nbsp;</span>
@@ -113,14 +87,14 @@
 							<div *ngFor="let item of shoppingPack;" class="d-flex border-top py-3"><!-- start of cart_row -->
 								<div class="pr-2"><!-- start of image_section -->
 								<a>
-									<img [src]="item.image" [alt]="item.title" width="70" class="img-fluid">
+									<img [src]="item['image']" [alt]="item['title']" width="70" class="img-fluid">
 								</a>
 								</div><!-- end of image_section -->
 
 								<div class="flex-grow-1"><!-- start of content_section -->
-								<a class="item-name d-block">{{item.title}}</a>
-								<span class="item-price"><label [innerHTML]="sanitizer.bypassSecurityTrustHtml(cartCurrency)"></label>{{item.price | number:'2.2-2'}}</span>
-								<span class="item-quantity">Quantity: {{item.cart_quantity}}</span>
+								<a class="item-name d-block">{{item['title']}}</a>
+								<span class="item-price"><label [innerHTML]="sanitizer.bypassSecurityTrustHtml(cartCurrency)"></label>{{item['price'] | number:'2.2-2'}}</span>
+								<span class="item-quantity">Quantity: {{item['cart_quantity']}}</span>
 								<!--button type="button" class="btn close-btn">
 									<span class="icon-cross">&nbsp;</span>
 									<span class="icon-cross">&nbsp;</span>

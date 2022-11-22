@@ -16,12 +16,12 @@ import { CustomerService } from '../../../_services/pb/customer.service';
 	]
 })
 export class DetailsComponent implements OnInit {
-	@ViewChild('getInvoicePdf', {static: false}) el: ElementRef;
+	@ViewChild('getInvoicePdf', {static: false}) el;
 	orderDetails:any=[];
 	qParams:any;
 	constructor(private loc:Location, private titleService: Title,private router:Router, private route: ActivatedRoute, private config:Myconfig, private auth: CustomerService) {
 		route.data.subscribe(res =>{
-			titleService.setTitle(res.title);
+			titleService.setTitle(res['title']);
 		});
         route.queryParams.subscribe((params: Params) => {
             this.qParams = params;
@@ -41,36 +41,36 @@ export class DetailsComponent implements OnInit {
 		let formData:any = {
 			orderNumber:orderNumber
 		};
-		this.auth.getOrderDetails(formData).subscribe(
-			res => {
+		this.auth.getOrderDetails(formData).subscribe({
+			next: (res) => {
 				if(res.status){
 					this.orderDetails = res.data;
 				}else{
 					this.router.navigate(['/customer/orders'], { queryParams: {} });
 				}
 			},
-			(err: HttpErrorResponse) => {
+			error: (err) => {
 				console.log("Server Isse!");
 			}
-		);
+		});
 	}
 
 	reOrders(orderNumber){
 		let formData:any = {
 			orderNumber:orderNumber
 		};
-		this.auth.reOrder(formData).subscribe(
-			res => {
+		this.auth.reOrder(formData).subscribe({
+			next: (res) => {
 				if(res.status){
 					this.router.navigate(['/store/cart'], { queryParams: {} });
 				}else{
 					alert(res.message);
 				}
 			},
-			(err: HttpErrorResponse) => {
+			error: (err) => {
 				console.log("Server Isse!");
 			}
-		);
+		});
 	}
 	
 	getInvoice(orderNumber){

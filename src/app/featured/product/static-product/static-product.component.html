@@ -1,0 +1,23 @@
+	<div class="sliderSec">
+		<swiper [config]="swiperConfig" class="swiper-container mySwiper" *ngIf="result.length"> 
+			<ng-template *ngFor="let item of result;" swiperSlide class="swiper-wrapper">
+				<div class="slidesCard">
+					<div class="swiper-slide card">
+						<div class="card-body">
+							<h5 class="card-title" (click)="gotoProduct(item['url_key']);" style="cursor:pointer">{{item['price']['name']}}</h5>
+							<figure (click)="gotoProduct(item['url_key']);">
+								<img [src]="item['images'][0]['large']" [alt]="item['images'][0]['alt']" class="img-fluid mx-auto d-block" />
+								<figcaption *ngIf="item['rating']" class="figure-caption">
+									{{item['rating'] | number: '1.1-1'}}<i class="fas fa-star"></i>
+								</figcaption>
+								<div *ngIf="item['is_stock'] == 'out_of_stock'" class="out_of_stock"><span>Out Of Stock</span></div>
+							</figure>							
+						</div>
+						<h3 class="cardPrice">
+							₹{{item['price']['price'] | number: '2.2-2'}} <del *ngIf="item['discount']['original'] > 0">₹{{item['discount']['original'] | number: '2.2-2'}}</del>
+						</h3>
+					</div>
+				</div>
+			</ng-template>
+		</swiper>											
+	</div>

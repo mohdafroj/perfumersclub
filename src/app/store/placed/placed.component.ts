@@ -12,7 +12,7 @@ import { Myconfig } from './../../_services/pb/myconfig';
 })
 export class PlacedComponent implements OnInit {
 	orderStep = 'process';
-	orderNumber = 0;
+	orderNumber = '';
 	orderMessage = '';
 	paymentGatewayUrl = ''
 	userId = 0;
@@ -33,8 +33,8 @@ export class PlacedComponent implements OnInit {
 		if( Object.keys(successData).length ){
 			this.orderNumber = successData['orderNumber'];
 		}
-		this.store.getOrderStatus(successData).subscribe(
-			res => {
+		this.store.getOrderStatus(successData).subscribe({
+			next: (res) => {
 				this.orderMessage = res.message;
 				switch ( res.status ) {
 					case 1: 
@@ -47,10 +47,10 @@ export class PlacedComponent implements OnInit {
 					default:
 						this.orderStep = 'paymentfail';
 				}
-			},( err: HttpErrorResponse ) => {
+			}, error: (err) => {
 				this.router.navigate(['/checkout/unauthorized']);
 			}
-		);
+		});
 	}
 	
 	orderTryAgain(){

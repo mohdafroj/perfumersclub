@@ -16,13 +16,12 @@ import { NavigationEnd, Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { Myconfig } from './_services/pb/myconfig';
 import { CustomerService } from './_services/pb/customer.service';
-import { TrackingService } from './_services/tracking.service';
 import { DataService } from './_services/data.service';
 import { SeoService } from './_services/seo.service';
 import { PagesService } from './_services/pb/pages.service';
 
 @Component({
-  selector: 'body',
+  selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
@@ -47,7 +46,6 @@ export class AppComponent {
 		private router: Router, 
 		private title: Title, 
 		private meta: Meta, 
-		private track:TrackingService,
 		private data:DataService,
 		private seo:SeoService,
 		private pages: PagesService,
@@ -56,20 +54,19 @@ export class AppComponent {
 		this.headerClass = '';
 		this.homePage 	 = 0;
 		this.userId 	 = 0;
-		this.sanitizer = sanitize;
+		this.sanitizer = this.sanitize;
 	}
 	
 	ngOnInit(){
-		this.cookieService.set('sameSite', 'Strict'); //Lax|Strict|None
-		this.pages.companyData().subscribe(
-		  res => {
+		this.cookieService.set('SameSite', 'Strict'); //Lax|Strict|None
+		this.pages.companyData().subscribe({
+		  next: (res) => {
 			let infoData = res['data']['company'];
 			this.pages.setCompanyData(res['data']);
 			this.stripBanner = ( ( infoData != undefined ) && (infoData['strip'] != undefined) && (infoData['strip'] != '') ) ? infoData['strip'] : '';
 		  },
-		  (err: HttpErrorResponse) => {
-		  }
-		);
+		  error: (err) => {}
+		});
 		this.config.scrollToTop(0, 0);
 		this.userId = this.customer.getId();
 		this.router.events.subscribe(event => {
@@ -87,7 +84,7 @@ export class AppComponent {
 	}
 	whatsAppChat () {
 		let infoData = this.pages.getCompanyData();
-		let company = ( (infoData != undefined) && (infoData['company'] != undefined) ) ? infoData['company'] : {phone:''};
+		let company = ( (infoData != undefined) && (infoData['company'] != undefined) ) ? infoData['company'] : {code:'',phone:''};
 		window.location.href = 'https://api.whatsapp.com/send/?phone='+company.code+company.phone+'&text=Hi, I need some Help';
 	}
 	ngOnChanges() {
@@ -166,7 +163,7 @@ export class AppComponent {
 	}
 	
 	getTitle(state, parent) {
-		var data = [];
+		var data:any = [];
 		if(parent && parent.snapshot.data && parent.snapshot.data.title) {
 		  data.push(parent.snapshot.data.title);
 		}

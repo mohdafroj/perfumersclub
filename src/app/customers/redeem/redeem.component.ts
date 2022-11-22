@@ -19,9 +19,9 @@ import { ToastrService } 										from 'ngx-toastr';
 
 })
 export class RedeemComponent implements OnInit {
-	rForm:FormGroup;  
+	rForm:any = FormGroup;  
 	userId:number							= 0;
-	productList								= [];
+	productList:any								= [];
 	resultMsg:string						= '';
 	resultStatus:number						= 0;
 	serverRequest = false;
@@ -29,7 +29,7 @@ export class RedeemComponent implements OnInit {
 	pincodeStep = 0;
 	pincodeStatus
 	redeemQuantity = 0;
-	redeemProduct = [];
+	redeemProduct:any = [];
 	addressId = 0;
 	addressResponse	= {};
 	addresses = [];
@@ -186,13 +186,13 @@ export class RedeemComponent implements OnInit {
 		if( (this.serverRequest == false) && ( checkForm == true ) && ( this.redeemProduct.length > 0 ) ) {
 			this.addressResponse = { message: '<i class="fa fa-spinner fa-spin"></i>', textClass:'text-danger' };
 			this.serverRequest = true;
-			this.store.checkPincode(formData.pincode).subscribe(
-				res => { //console.log(res);
+			this.store.checkPincode(formData.pincode).subscribe({
+				next: (res) => { //console.log(res);
 					this.pincodeStatus = res.status; // 1 both, 2 prepaid, 3 postpaid, 0 not
 					if( this.pincodeStatus > 0 ) {
 						formData.setdefault = 1;
-						this.customer.addAddresses(formData).subscribe(
-							res => {
+						this.customer.addAddresses(formData).subscribe({
+							next: (res) => {
 								this.serverRequest = false;
 								if( res.status ){
 									this.addresses = res.data;
@@ -212,7 +212,7 @@ export class RedeemComponent implements OnInit {
 									this.addressResponse = { message:res.message, textClass:'text-danger' };
 								}
 							},
-							(err: HttpErrorResponse) => {
+							error: (err) => {
 								var message = '';
 								if(err.error instanceof Error){
 									message = 'Client error: '+err.error.message;
@@ -222,17 +222,19 @@ export class RedeemComponent implements OnInit {
 								this.addressResponse = { message:message, textClass:'text-danger' };
 								this.serverRequest = false;
 							}
-						);
+						});
 					} else {
 						this.addressResponse = { message:res.message, textClass:'text-danger' };
 						this.serverRequest = false;
 					}
 				},
-				(err: HttpErrorResponse) => {
+				error: (err) => {
 					this.addressResponse = { message:'Sorry, may be network issue, please refresh page!', textClass:'text-danger' };
+				},
+				complete: () => {
 					this.serverRequest = false;
-				}
-			);
+				},
+			});
 		} else if ( this.redeemProduct.length > 0 ) {
 			this.addressResponse = { message: 'Please select product to redeem!', textClass:'text-danger' };
 		} else if ( checkForm == false ) {	
@@ -248,8 +250,8 @@ export class RedeemComponent implements OnInit {
 		this.resultStatus   = 0;
 		let prms = new HttpParams();
 		prms = prms.append('userId', `${this.userId}`);
-		this.product.getRedeemProducts(prms).subscribe(
-            res => {
+		this.product.getRedeemProducts(prms).subscribe({
+            next: (res) => {
                 if(res.status){
 					this.productList = res.data['products'];
 					this.redeemQuantity = res.data['redeemQuantity'];
@@ -261,26 +263,28 @@ export class RedeemComponent implements OnInit {
 				}
 				//console.log(this.redeemQuantity);
             },
-            (err: HttpErrorResponse) => {
+            error: (err) => {
                 if(err.error instanceof Error){
 					this.resultMsg = err.error.message;
                 }else{
 					this.resultMsg = JSON.stringify(err.error);
                 }
+            },
+			complete: () => {
 				this.resultStatus = 1;
-            }
-        );
+			}
+        });
     }
 
 	selectedProduct (item) {
-		return this.redeemProduct.some(function(el){ return el.id === item.id });
+		return this.redeemProduct.some(function(el){ return el['id'] === item.id });
 	}
 	
 	selectProduct(item) {
 		this.tabIndex = 1;
 		this.orderId = 0;
-		let totalItem = this.redeemProduct.reduce(function(total, itemqty){ return total + itemqty.cart_quantity ;}, 0);
-		if ( (this.redeemQuantity > totalItem) && !this.redeemProduct.some(function(el){ return el.id === item.id }) ) {
+		let totalItem = this.redeemProduct.reduce(function(total, itemqty){ return total + itemqty['cart_quantity'] ;}, 0);
+		if ( (this.redeemQuantity > totalItem) && !this.redeemProduct.some(function(el){ return el['id'] === item.id }) ) {
 			item.cart_quantity = 1;
 			this.redeemProduct.push(item);
 			this.track.addToCart(item);
@@ -323,10 +327,10 @@ export class RedeemComponent implements OnInit {
 	
 	redeemOrder () {
 		if ( !this.serverRequest ) {
-			this.serverRequest == true;
+			this.serverRequest = true;
 			let formData = {product: this.redeemProduct, address: this.selectedAddress};
-			this.customer.redeemOrder(formData).subscribe(
-			  res => {
+			this.customer.redeemOrder(formData).subscribe({
+			  next: (res) => {
 				if( res.status ){
 				  this.orderId = res.data.orderNumber;
 				  this.orderMessage = res.message;
@@ -343,15 +347,17 @@ export class RedeemComponent implements OnInit {
 				}
 				this.serverRequest == true;
 			  },
-			  (err: HttpErrorResponse) => {
+			  error: (err) => {
 				if(err.error instanceof Error){
 				  console.log('Client Error: '+err.error.message);
 				}else{
 				  console.log(`Server Error: ${err.status}, body was: ${JSON.stringify(err.error)}`);
 				}
+			  },
+			  complete: () => {
 				this.serverRequest == true;
 			  }
-			);
+			});
 		} else {
 			this.toastr.warning("Please wait...");
 		}

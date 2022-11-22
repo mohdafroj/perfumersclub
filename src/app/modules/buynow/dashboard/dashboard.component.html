@@ -54,25 +54,25 @@
 				
 			<div *ngFor="let item of filterProducts;" class="col-lg-3 col-md-4 col-sm-6 list_div"><!-- start of product -->
 				<div class="product-grid3">
-					<div *ngIf="item.tagLine != ''" class="productTags"><!-- start of productTags -->
-						<span>{{item.tagLine}}</span>
+					<div *ngIf="item['tagLine'] != ''" class="productTags"><!-- start of productTags -->
+						<span>{{item['tagLine']}}</span>
 					</div><!-- end of productTags -->
 					
 					<div class="genderIcon">
-						<span *ngIf="item.gender == 'male'" class="iconGender">
+						<span *ngIf="item['gender'] == 'male'" class="iconGender">
 							<img src="assets/images/gender_icon/men.svg" class="img-fluid" alt="Men">
 						</span>
-						<span *ngIf="item.gender == 'male'" class="iconText">Men</span>
+						<span *ngIf="item['gender'] == 'male'" class="iconText">Men</span>
 						
-						<span *ngIf="item.gender == 'female'" class="iconGender">
+						<span *ngIf="item['gender'] == 'female'" class="iconGender">
 							<img src="assets/images/gender_icon/women.svg" class="img-fluid" alt="Women`s">
 						</span>
-						<span *ngIf="item.gender == 'female'" class="iconText">Women`s</span>
+						<span *ngIf="item['gender'] == 'female'" class="iconText">Women`s</span>
 						
-						<span *ngIf="item.gender == 'unisex'" class="iconGender">
+						<span *ngIf="item['gender'] == 'unisex'" class="iconGender">
 							<img src="assets/images/gender_icon/unisex.svg" class="img-fluid" alt="Unisex">
 						</span>
-						<span *ngIf="item.gender == 'unisex'" class="iconText">Unisex</span>
+						<span *ngIf="item['gender'] == 'unisex'" class="iconText">Unisex</span>
 						
 					</div>
 					<div class="product-image3"><!-- start of image -->
@@ -84,18 +84,18 @@
 						<ul class="social">
 							<li><button class="btn" (click)="viewProduct(item);" data-target="#productDeail" data-toggle="modal"><i class="fas fa-eye"></i></button></li>
 							<li>
-								<button *ngIf="customerCart.indexOf(item.id) == -1" (click)="addIntoCart(item);" class="btn shopping-cart-btn"><i class="fas fa-shopping-cart"></i></button>
-								<a *ngIf="customerCart.indexOf(item.id) > -1" routerLink="/checkout/cart" class="btn go-cart-btn"><i class="fas fa-play"></i></a>
+								<button *ngIf="customerCart.indexOf(item['id']) == -1" (click)="addIntoCart(item);" class="btn shopping-cart-btn"><i class="fas fa-shopping-cart"></i></button>
+								<a *ngIf="customerCart.indexOf(item['id']) > -1" routerLink="/checkout/cart" class="btn go-cart-btn"><i class="fas fa-play"></i></a>
 							</li>
 						</ul>
 						<!--span class="product-new-label">New</span-->
 					</div><!-- end of image -->
 					
 					<div class="product-content"><!-- start of content -->
-						<h3 class="title"><span class="title_content" (click)="viewProduct(item);" data-target="#productDeail" data-toggle="modal">{{item.name}}</span></h3>
+						<h3 class="title"><span class="title_content" (click)="viewProduct(item);" data-target="#productDeail" data-toggle="modal">{{item['name']}}</span></h3>
 						<div class="product_price"><!-- start of product_price -->
-							<span *ngIf="item.discount.original > 0">₹{{item.discount.original | number: '2.2-2'}}</span>
-							₹{{item.price | number: '2.2-2'}} 
+							<span *ngIf="item['discount']['original'] > 0">₹{{item['discount']['original'] | number: '2.2-2'}}</span>
+							₹{{item['price'] | number: '2.2-2'}} 
 						</div><!-- end of product_price -->
 					</div><!-- end of content -->
 				</div>
@@ -181,15 +181,15 @@
 				
 				<div *ngFor="let item of shoppingCart;" class="d-flex border-top py-3 position-relative"><!-- start of cart_row -->
 					<div class="pr-2" style="width:23%;"><!-- start of image_section -->
-						<a [routerLink]="['/', item.url_key]" target="_blank">
-							<img [src]="item.images[0].url" [alt]="item.name" [title]="item.name" class="img-fluid" />
+						<a [routerLink]="['/', item['url_key']]" target="_blank">
+							<img [src]="item['images'][0]['url']" [alt]="item['name']" [title]="item['name']" class="img-fluid" />
 						</a>
 					</div><!-- end of image_section -->
 
 					<div class="flex-grow-1 cartContent"><!-- start of content_section -->
-						<a [routerLink]="['/', item.url_key]" target="_blank" class="item-name d-block">{{item.name}}</a>
-						<span class="item-price"><label [innerHTML]="sanitizer.bypassSecurityTrustHtml(cartCurrency)"></label>{{item.price | number:'2.2-2'}} <del *ngIf="item['discount']['original'] != undefined">₹{{item.discount.original * item.cart_quantity | number:'2.2-2'}}</del></span>
-						<span class="item-quantity">Quantity: {{item.cart_quantity}}</span>
+						<a [routerLink]="['/', item['url_key']]" target="_blank" class="item-name d-block">{{item['name']}}</a>
+						<span class="item-price"><label [innerHTML]="sanitizer.bypassSecurityTrustHtml(cartCurrency)"></label>{{item['price'] | number:'2.2-2'}} <del *ngIf="item['discount']['original'] != undefined">₹{{item['discount']['original'] * item['cart_quantity'] | number:'2.2-2'}}</del></span>
+						<span class="item-quantity">Quantity: {{item['cart_quantity']}}</span>
 						<button type="button" class="btn close-btn" (click)="removeItem = item;" data-toggle="modal" data-target="#deleteConfirmModal">
 							<span class="icon-cross">&nbsp;</span>
 							<span class="icon-cross">&nbsp;</span>
@@ -223,7 +223,7 @@
 				</button>
 			</div>
 			<div class="modal-body">
-				<p class="text-center" *ngIf="removeItem['name']">Are you sure, you want to delete {{removeItem.name}} product</p>
+				<p class="text-center" *ngIf="removeItem['name']">Are you sure, you want to delete {{removeItem['name']}} product</p>
 				<p *ngIf="removeAction" class="text-center text-danger"><span class="spinner-grow spinner-grow-sm"></span> Loading..</p>
 			</div>
 			<div class="modal-footer multiple_btn m-auto border-0 p-2">
@@ -259,28 +259,28 @@
 					<!-- The slideshow -->
 					<div *ngIf="productDetail['isStock'] != 'in_stock'" class="carousel-inner">
 						<div class="carousel-item image_part active">
-							<img [src]="productDetail.oos_image" [alt]="productDetail.title" class="img-fluid mx-auto" [title]="productDetail.title">
+							<img [src]="productDetail['oos_image']" [alt]="productDetail['title']" class="img-fluid mx-auto" [title]="productDetail['title']">
 						</div>
 					</div>
 					<div *ngIf="productDetail['isStock'] == 'in_stock'" class="carousel-inner">
 						<div *ngFor="let image of productDetail['images']; let i = index;" class="carousel-item image_part" [ngClass]="{'active':(sliderIndex == i)}">
-							<img [src]="image.large" [alt]="image.alt" class="img-fluid mx-auto" [title]="productDetail.title">
+							<img [src]="image.large" [alt]="image.alt" class="img-fluid mx-auto" [title]="productDetail['title']">
 						</div>
 					</div>
 				</div><!-- end of image_div -->
 				
 				<div class="col-sm-7 col-12"><!-- start of content_div -->
-					<h3>{{productDetail.title}}</h3>
-					<h4>₹{{productDetail.price | number: '2.2-2'}} 
-						<span *ngIf="productDetail.discount.original > 0">₹{{productDetail.discount.original | number: '2.2-2'}}</span>
+					<h3>{{productDetail['title']}}</h3>
+					<h4>₹{{productDetail['price'] | number: '2.2-2'}} 
+						<span *ngIf="productDetail['discount']['original'] > 0">₹{{productDetail['discount']['original'] | number: '2.2-2'}}</span>
 					</h4>
-					<div [ngSwitch]="productDetail.isStock">
+					<div [ngSwitch]="productDetail['isStock']">
 						<div *ngSwitchDefault>
 							<button type="button" class="btn my-btn cart_btn from-left">Out of Stock</button>
 						</div>
 						<div *ngSwitchCase="'in_stock'">
-							<a routerLink="/checkout/cart" data-dismiss="modal" class="btn my-btn cart_btn from-left" *ngIf="(customerCart.indexOf(productDetail.id) > -1)">Go to Cart</a>
-							<button type="button" class="btn my-btn cart_btn from-left" data-dismiss="modal" *ngIf="(customerCart.indexOf(productDetail.id) == -1)" (click)="addIntoCart(productDetail);">Buy Now</button>
+							<a routerLink="/checkout/cart" data-dismiss="modal" class="btn my-btn cart_btn from-left" *ngIf="(customerCart.indexOf(productDetail['id']) > -1)">Go to Cart</a>
+							<button type="button" class="btn my-btn cart_btn from-left" data-dismiss="modal" *ngIf="(customerCart.indexOf(productDetail['id']) == -1)" (click)="addIntoCart(productDetail);">Buy Now</button>
 						</div>
 					</div>                            
 					

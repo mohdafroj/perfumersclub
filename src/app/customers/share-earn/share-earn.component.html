@@ -37,46 +37,6 @@
 		
 	</div><!-- end of refer_link_div -->
 	
-	<!--div class="col-md-5 col-sm-6 col-12">
-		<div class="refer_wallet_div">
-			<figure>
-				<img src="assets/images/user_profile/reffer_earn.svg" width="100" class="img-fluid ml-4">
-			</figure>
-			
-			<h4>Your referral credits</h4>
-			
-			<ul class="list-unstyled">
-				<li class="d-flex justify-content-between align-items-center">
-					<span data-target="#earnedModal" data-toggle="modal">Earned <small>(perfumes)</small></span>
-					<a routerLink="redeem-now" class="info_btn">Redeem Now</a>
-					<span>{{refersData.earned.length | number:'2.0-0'}}</span>
-				</li>
-				<li class="d-flex justify-content-between align-items-center">
-					<span>Redeemed <small>(perfumes)</small></span>
-					<span>{{refersData['redeemed'].length | number:'2.0-0'}}</span>
-				</li>
-				<li *ngIf="refersData['holding'].length > 0" class="d-flex justify-content-between align-items-center">
-					<span>On Hold <small>(perfumes)</small></span>
-					<span>{{refersData['holding'].length | number:'2.0-0'}}</span>
-				</li>
-				<li class="d-flex justify-content-between align-items-center">
-					<span data-target="#pendingModal" data-toggle="modal">Pending <small>(perfumes)</small></span>
-					<button type="button" data-target="#pendingInfoModal" data-toggle="modal" class="info_btn">(info)</button>
-					<span>{{refersData['pending'].length | number:'2.0-0'}}</span>
-				</li>
-				<li class="d-flex justify-content-between align-items-center">
-					<span data-target="#expiredModal" data-toggle="modal">Expired <small>(perfumes)</small></span>
-					<button type="button" data-target="#expiredInfoModal" data-toggle="modal" class="info_btn">(info)</button>
-					<span>{{refersData['expired'].length | number:'2.0-0'}}</span>
-				</li>				
-			</ul>
-			
-			<button type="button" data-target="#referralNetworkModal" data-toggle="modal" class="btn my-btn checkout_btn from-left btn-block">
-				Referral Network
-			</button>
-		</div>
-	</div-->
-	
 	<div class="col-12 mt-5"><!-- start of how_does_work -->
 		<h6 class="howWork_heading">How does it work?</h6>
 		
@@ -208,10 +168,10 @@
                             <tbody>
                                 <tr *ngFor="let item of refersData['redeemed']"><!-- start of tr -->
                                     <td class="border text-center" data-title="Date">
-                                        <p class="m-0">{{item.created}}</p>
+                                        <p class="m-0">{{item['created']}}</p>
                                     </td>
                                     <td class="border text-center" data-title="Referral Name">
-                                        <p class="m-0">{{item.name}}</p>
+                                        <p class="m-0">{{item['name']}}</p>
                                     </td>
                                     <td class="border text-center" data-title="Referral Status">
                                         <p class="m-0 text-success">Successfully Earned</p>
@@ -220,10 +180,10 @@
                                 
                                 <tr *ngFor="let item of refersData['pending']"><!-- start of tr -->
                                     <td class="border text-center" data-title="Date">
-                                        <p class="m-0">{{item.created}}</p>
+                                        <p class="m-0">{{item['created']}}</p>
                                     </td>
                                     <td class="border text-center" data-title="Referral Name">
-                                        <p class="m-0">{{item.name}}</p>
+                                        <p class="m-0">{{item['name']}}</p>
                                     </td>
                                     <td class="border text-center" data-title="Referral Status">
                                         <p class="m-0 text-danger">Pending</p>

@@ -6,7 +6,7 @@
 	<div class="col-12 redeem_product_listing d-flex flex-wrap"><!-- start of listing -->
 
 		<div *ngFor="let item of productList" class="col-lg-4 col-md-6 col-sm-6 list_div"><!-- start of product -->
-			<div class="product-grid3" [ngClass]="{'active': selectedProduct(item)}">
+			<div class="product-grid3" [class]="{'active': selectedProduct(item)}">
 				<div class="product-image3"><!-- start of image -->
 					<span class="image_part"><!-- start of single_image -->
 						<img [src]="item.images[0]['large']" [alt]="item.title">
@@ -29,7 +29,7 @@
 				<div class="product-content"><!-- start of content -->
 					<h3 class="title"><span class="title_content">{{item.name}}</span></h3>
 					<div class="product_size"><!-- start of product_size -->
-						{{item.size}} {{item.unit | uppercase}}
+						{{item.size}} {{item.unit}}
 					</div><!-- end of product_size -->
 					<div class="product_size mt-3"><!-- start of product_size -->
 						<button type="button" (click)="nextButton()" class="btn my-btn checkout_btn from-left btn-block" data-target="#formFieldPopup" data-toggle="modal">
@@ -99,7 +99,7 @@
 								</label><!-- end of label -->
 							</div><!-- end of product_div -->
 							<div class="col-md-12 col-12" *ngIf="addressResponse['textClass']"><!-- start of product_div -->
-								<p [ngClass]="addressResponse.textClass"  [innerHTML]="addressResponse.message"></p>
+								<p [class]="addressResponse['textClass']"  [innerHTML]="addressResponse['message']"></p>
 							</div><!-- end of product_div -->
 						</div><!-- end of address_form -->
                         
@@ -142,7 +142,7 @@
 						
 							<div class="form-group col-sm-6 col-12"><!-- start of stateField -->
 								<select class="custom-select form-control" formControlName="state" required style="cursor:pointer;">
-									<option *ngFor="let item of addresses.states" [value]="item.title">{{item.title}}</option>
+									<option *ngFor="let item of addresses['states']" [value]="item.title">{{item.title}}</option>
 								</select>
 							</div><!-- end of City -->
 						
@@ -152,7 +152,7 @@
                         
                         </div><!-- end of form_field -->
 						<div class="col-md-12 col-12" *ngIf="addressResponse['textClass']"><!-- start of product_div -->
-							<p [ngClass]="addressResponse.textClass"  [innerHTML]="addressResponse.message"></p>
+							<p [class]="addressResponse['textClass']"  [innerHTML]="addressResponse['message']"></p>
 						</div><!-- end of product_div -->
                         
                     </div><!-- end of modal-body -->

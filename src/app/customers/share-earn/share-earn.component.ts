@@ -13,10 +13,14 @@ import { Myconfig } from './../../_services/pb/myconfig';
   encapsulation: ViewEncapsulation.None
 })
 export class ShareEarnComponent implements OnInit {
-	referForm: FormGroup;  
+	referForm;  
 	copyLink = '';
 	refersData = {'earned':[], 'redeemed':[], 'holding':[], 'pending':[], 'expired':[]};
-    constructor( private toastr: ToastrService, private config: Myconfig, private customer: CustomerService, private clipboardService: ClipboardService ) { }
+    constructor( 
+		private toastr: ToastrService, 
+		private config: Myconfig, 
+		private customer: CustomerService,
+		private clipboardService: ClipboardService ) { }
 
 	ngOnInit() {
 		this.getReferEarn();
@@ -25,21 +29,21 @@ export class ShareEarnComponent implements OnInit {
 		});
 	}
 	getReferEarn () {
-		this.customer.getRferEarn().subscribe(
-			res => {
+		this.customer.getRferEarn().subscribe({
+			next: (res) => {
 				this.refersData = res.data.refer;
 				this.copyLink = res.data.referLink;
 			},
-			(err: HttpErrorResponse) => {
+			error: (err) => {
 				console.log("Server Isse!");
 			}
-		);
+		});
 	}
 	sendReferEmail (formData) {
 		formData.referlink = this.copyLink;
 		if ( this.config.EMAIL_REGEXP.test(formData['email']) ) {
-			this.customer.sendRferEarn(formData).subscribe(
-				res => {
+			this.customer.sendRferEarn(formData).subscribe({
+				next: (res) => {
 					if ( res.status ) {
 						this.referForm.controls.email.setValue('', {});
 						this.toastr.success('Email sent successfully!');
@@ -47,10 +51,10 @@ export class ShareEarnComponent implements OnInit {
 						this.toastr.error(res.message);
 					}
 				},
-				(err: HttpErrorResponse) => {
+				error: (err) => {
 					this.toastr.error("Server Isse!");
 				}
-			);
+			});
 		} else {
 			this.toastr.error('Please enter valid email id!');
 		}

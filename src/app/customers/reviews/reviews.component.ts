@@ -13,14 +13,14 @@ import { CustomerService } from '../../_services/pb/customer.service';
 	]
 })
 export class ReviewsComponent implements OnInit {
-	msg:string;
+	msg;
 	reviews:any				= [];
 	moreReviewsFlag:number 	= 1;
 	loader:number 			= 1;
 	page:number				= 1
 	constructor(private titleService: Title, private route: ActivatedRoute, private config:Myconfig, private auth: CustomerService) {
 		route.data.subscribe(res =>{
-			titleService.setTitle(res.title);
+			titleService.setTitle(res['title']);
 		});
 	}
 
@@ -30,24 +30,23 @@ export class ReviewsComponent implements OnInit {
 	}
 
 	getReviews() {		
-		this.auth.getCustomerReviews(this.page).subscribe(
-			res => {
+		this.auth.getCustomerReviews(this.page).subscribe({
+			next: (res) => {
 				if(res.data['reviews']){
 					for( let i of res.data.reviews ){
 						this.reviews.push(i);
 					}
 					
 				}
-				//console.log(this.reviews);
 				this.moreReviewsFlag = res.data['viewMore'] ? res.data.viewMore:0;
+			},
+			error: (err) => {
+				console.log("Server Isse!");
+			},
+			complete: () => {
 				this.loader 	= 0;
 			},
-			(err: HttpErrorResponse) => {
-				console.log("Server Isse!");
-				this.loader 	= 0;
-			}
-		);
-
+		});
 	}
 	
 	loadMoreReviews(){

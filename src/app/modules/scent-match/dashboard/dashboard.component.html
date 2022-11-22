@@ -62,7 +62,7 @@
                         <div class="col-md-5 p-0 appendDiv">
 							<div class="input-group">
 								<select name="brand" class="form-control rounded-0 h-auto" (change)="getSelectedValue($event);">
-									<option *ngFor="let item of brands" [value]="item.id">{{item.title}}</option>
+									<option *ngFor="let item of brands" [value]="item['id']">{{item['title']}}</option>
 								</select>
 							</div>
 						</div>
@@ -78,8 +78,8 @@
                                 </div-->
 								
 								<mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" (optionSelected)="addKeywords(myControl.value);">
-								  <mat-option *ngFor="let option of algoProducts" [value]="option.name">
-									{{option.name}}
+								  <mat-option *ngFor="let option of algoProducts" [value]="option['name']">
+									{{option['name']}}
 								  </mat-option>
 								</mat-autocomplete>
                             </div>
@@ -112,33 +112,33 @@
                             <div *ngFor="let item of productList;" class="col-lg-4 col-md-6 col-sm-6 list_div"><!-- start of product -->
                                 <div class="product-grid3">
                                 	<div class="percentage_match"><!-- start of percentage_match -->
-                                    	<h5>Affinity Match <span>{{ item.family.fscore }}%</span></h5>
+                                    	<h5>Affinity Match <span>{{ item['family']['fscore'] }}%</span></h5>
                                     </div><!-- end of percentage_match -->
                                     
                                     <div class="product-image3"><!-- start of image -->
                                         <span *ngIf="item['isStock'] != 'in_stock'" class="image_part">
-                                            <img [src]="item.oos_image" [alt]="item.title">
+                                            <img [src]="item['oos_image']" [alt]="item['title']">
                                         </span>
                                         <span *ngIf="item['isStock'] == 'in_stock'" class="image_part">
-                                            <img [src]="item.images[0]['large']" [alt]="item.title">
+                                            <img [src]="item['images'][0]['large']" [alt]="item['title']">
                                         </span>
                                         
                                         <ul class="social">
                                             <li><button class="btn" data-target="#productDeail" (click)="viewProduct(item);" data-toggle="modal"><i class="fas fa-eye"></i></button></li>
 											<li>
-												<button *ngIf="customerCart.indexOf(item.id) == -1" (click)="addIntoCart(item);" class="btn shopping-cart-btn"><i class="fas fa-shopping-cart"></i></button>
-												<a *ngIf="customerCart.indexOf(item.id) > -1" routerLink="/checkout/cart" class="btn" title="Goto Cart"><i class="fas fa-play"></i></a>
+												<button *ngIf="customerCart.indexOf(item['id']) == -1" (click)="addIntoCart(item);" class="btn shopping-cart-btn"><i class="fas fa-shopping-cart"></i></button>
+												<a *ngIf="customerCart.indexOf(item['id']) > -1" routerLink="/checkout/cart" class="btn" title="Goto Cart"><i class="fas fa-play"></i></a>
 											</li>
                                         </ul>
                                     </div><!-- end of image -->
                                     
                                     <div class="product-content"><!-- start of content -->
-                                        <h3 class="title"><span class="title_content" data-target="#productDeail" (click)="viewProduct(item);" data-toggle="modal">{{item.name}}</span></h3>
+                                        <h3 class="title"><span class="title_content" data-target="#productDeail" (click)="viewProduct(item);" data-toggle="modal">{{item['name']}}</span></h3>
                                         <div class="product_price"><!-- start of product_price -->
-                                            ₹{{item.price | number:'2.2-2'}}
-                                            <span *ngIf="item.discount.original > 0">₹{{item.discount.original | number:'2.2-2'}}</span>
+                                            ₹{{item['price'] | number:'2.2-2'}}
+                                            <span *ngIf="item['discount']['original'] > 0">₹{{item['discount']['original'] | number:'2.2-2'}}</span>
                                         </div><!-- end of product_price -->
-										<div *ngIf="item.discount.original > 0" class="product_size"><mark>{{item.discount.label}}</mark></div>
+										<div *ngIf="item['discount']['original'] > 0" class="product_size"><mark>{{item['discount']['label']}}</mark></div>
                                     </div><!-- end of content -->
                                 </div>
                             </div><!-- end of product -->
@@ -205,8 +205,8 @@
 						<mark>{{productDetail.discount.label}}</mark>
 					</div><!-- end of product_size -->
 					<button type="button" class="btn my-btn cart_btn from-left" data-dismiss="modal" *ngIf="userId == 0" (click)="addIntoCart(productDetail);">Buy Now</button>
-					<a routerLink="/checkout/cart" data-dismiss="modal" class="btn my-btn cart_btn from-left" *ngIf="( (userId > 0) && (customerCart.indexOf(productDetail.id) > -1) )">Go to Cart</a>
-					<button type="button" class="btn my-btn cart_btn from-left" *ngIf="( (userId > 0) && (customerCart.indexOf(productDetail.id) == -1) )" (click)="addIntoCart(productDetail);">Buy Now</button>
+					<a routerLink="/checkout/cart" data-dismiss="modal" class="btn my-btn cart_btn from-left" *ngIf="( (userId > 0) && (customerCart.indexOf(productDetail['id']) > -1) )">Go to Cart</a>
+					<button type="button" class="btn my-btn cart_btn from-left" *ngIf="( (userId > 0) && (customerCart.indexOf(productDetail['id']) == -1) )" (click)="addIntoCart(productDetail);">Buy Now</button>
 					
 					<!-- start of tabs -->
 					<ul id="tabs" class="nav nav-tabs" role="tablist"><!-- start of tabs_click -->

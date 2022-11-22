@@ -12,6 +12,7 @@ import { StoreService } 										from './../../_services/pb/store.service';
 import { TrackingService } 										from './../../_services/tracking.service';
 import { SeoService } 											from './../../_services/seo.service';
 import { DataService } 											from './../../_services/data.service';
+import { isNgTemplate } from '@angular/compiler';
 
 @Component({
   selector: 'pc-cms',
@@ -21,18 +22,18 @@ import { DataService } 											from './../../_services/data.service';
 })
 export class CmsComponent implements OnInit {
 	pageType = 'loading';
-	plusContent = [];
+	plusContent:any = [];
 	productOffer = '';
-	pincodeForm:FormGroup;
+	pincodeForm;
 	userId:number							= 0;
-	result	:any							= {};
+	result:any							= {};
 	resultMsg:string						= '';
 	resultStatus:number						= 0;
-	urlKey									= '';	
+	urlKey:any								= '';	
 	productId:number						= 0;	
 	nguSecond;
-	nguSecondToken:string;
-	customerCart = [];
+	nguSecondToken;
+	customerCart:any = [];
 	serverRequest: boolean = true;
 	pincodeMessage = '';
 	pincodeStep = 0;
@@ -40,15 +41,15 @@ export class CmsComponent implements OnInit {
 	toggleIndex = 0;
 	toggleActive = 'minus';
 	toggleClass = ['minus','plus','plus','plus','plus','plus','plus','plus','plus','plus','plus'];
-	
-	newReview = [];
+	saleBanner:boolean = false;
+	newReview:any = [];
 	reviewSelected = 0;
 	reviewMsg	= '';
 	reviewStatus = 0;
-	reviewForm: FormGroup;
+	reviewForm;
 	customerReviews = 0;
 	customerRating = 0;
-	reviewsList = [];
+	reviewsList:any = [];
 	reviewsPage = 1;
 	reviewsLoader = '';
 	reviewOrder = 0;
@@ -107,10 +108,12 @@ export class CmsComponent implements OnInit {
 	}
 
     ngOnInit() {
+		this.config.scrollToBottom(10,10);
 		this.userId = this.customer.getId();
 		let pin: any = localStorage.getItem('savePincode');
 		let myCart = this.customer.getFromCart();
 		this.customerCart = myCart['shopping']['cart'].map( (item) => { return item.id; });
+		this.seo.createLinkForCanonicalURL();
 		let savePincode = '';
 		if ( pin != 'undefined' ){
 			savePincode = JSON.parse(pin);
@@ -124,8 +127,20 @@ export class CmsComponent implements OnInit {
 		});
 		this.route.paramMap.subscribe(res => {
 			this.urlKey = res.get('key');  
-			this.title.setTitle(this.urlKey);
-			this.config.scrollToTop();
+			for ( let item in this.seo.metaPages){
+				if ( this.seo.metaPages[item].urlKey == this.urlKey ) {
+
+					this.title.setTitle(this.seo.metaPages[item].metaTitle);
+
+					const metaKeyword: MetaDefinition = { name: 'keywords', content: this.seo.metaPages[item].metaKeyword};
+					this.meta.addTag(metaKeyword);
+
+					const description: MetaDefinition = { name: 'description', content: this.seo.metaPages[item].metaDescription};
+					this.meta.addTag(description);
+
+					this.seo.ogMetaTag(this.seo.metaPages[item].metaTitle, this.seo.metaPages[item].metaDescription, this.seo.metaPages[item].image);
+				}
+			}
 			this.getDetails();
 		});
 				
@@ -188,14 +203,21 @@ export class CmsComponent implements OnInit {
 		};	  
   	}
   
+	ngAfterContentChecked() {
+		if ( this.result.title != '' ){
+			//console.log(this.result);
+			//this.title.setTitle(this.result.title);
+			//this.seo.ogMetaTag(this.result.metaTitle, this.result.metaDescription);
+		}
+	}
   	getDetails(){
 		this.resultMsg = 'Loading...';
 		this.resultStatus = 0;
 		let prms = new HttpParams();
 		prms = prms.append('key', this.urlKey);
 		prms = prms.append('userId', `${this.userId}`);
-		this.product.getPages(prms).subscribe(
-		  res => { 
+		this.product.getPages(prms).subscribe({
+		  next: (res) => { 
 			if( res.status ){
 				this.pageType  = res.data.pageType;
 				this.result = res.data;
@@ -203,9 +225,10 @@ export class CmsComponent implements OnInit {
 				this.productOffer = this.result.offer;
 				//this.data.sendReviews(this.result);
 				this.reviewsList = (this.result['reviews'] == undefined) ? [] : this.result.reviews;
-				//this.data.sendRelatedProduct({userId: this.userId, items: this.result.related});
-				this.title.setTitle(this.result.title);
+				this.dataService.sendRelatedProduct({userId: this.userId, items: this.result.related});
 				this.resultMsg = '';
+				/*
+				this.title.setTitle(this.result.title);
 				if( (this.result.metaTitle != undefined) && (this.result.metaTitle != null) && (this.result.metaTitle != '') ){
 					this.title.setTitle(this.result.metaTitle);
 				}
@@ -216,12 +239,11 @@ export class CmsComponent implements OnInit {
 				if(this.result.metaDescription != ''){
 					const description: MetaDefinition = { name: 'description', content: this.result.metaDescription};
 					this.meta.addTag(description);
-				}
+				}*/
 				switch( this.pageType ){
 					case 'product':
 						this.customerReviews = this.result['custReviews']['customers'];
 						this.customerRating = this.result['custReviews']['rating'];
-						this.seo.ogMetaTag(this.result.metaTitle, this.result.metaDescription, this.result.images[0].large);
 						this.track.clickProduct(this.result);
 						this.seo.removeAMPPageLink();
 						break;
@@ -229,7 +251,6 @@ export class CmsComponent implements OnInit {
 						if( res.data.is_amp ){
 							this.seo.createAMPPageLink();
 						}
-						this.seo.ogMetaTag(this.result.metaTitle, this.result.metaDescription, res.data.image);
 						break;
 					default:
 				}
@@ -240,7 +261,7 @@ export class CmsComponent implements OnInit {
 			this.resultStatus = 1;
 			
 		  },
-		  (err: HttpErrorResponse) => {
+		  error: (err) => {
 			if(err.error instanceof Error){
 			  this.resultMsg = err.error.message;
 			}else{
@@ -248,7 +269,7 @@ export class CmsComponent implements OnInit {
 			}
 			this.resultStatus = 1;
 		  }
-		);
+		});
 	}
 
 	checkPincode (pincode) {
@@ -256,8 +277,8 @@ export class CmsComponent implements OnInit {
 		//let pincode = this.elem.nativeElement.querySelector('#pincode').value;
 		if( pincode > 0 ){
 			this.pincodeStep = 1;
-			this.store.checkPincode(pincode).subscribe(
-				res => {
+			this.store.checkPincode(pincode).subscribe({
+				next: (res) => {
 					this.pincodeMessage = res.message;
 					if( res.status ){
 						localStorage.setItem('savePincode', JSON.stringify(res.data.pincode));
@@ -266,11 +287,11 @@ export class CmsComponent implements OnInit {
 						this.pincodeStep = 0;
 					}
 				},
-				(err: HttpErrorResponse) => {
+				error: (err) => {
 					this.pincodeMessage = 'Sorry, there are some app issue!';
 					this.pincodeStep = 0;
 				}
-			);
+			});
 		} else {
 			this.pincodeStep = 0;
 			this.pincodeMessage = 'Please enter pincode number!';
@@ -294,8 +315,8 @@ export class CmsComponent implements OnInit {
 			carItemIds = carItemIds.join(',');
 			carItemQuantities = carItemQuantities.join(',');
 			let formData = {itemId: carItemIds, quantity: carItemQuantities, useraction: 'add'};
-			this.store.addToCart(formData).subscribe(
-				res => {
+			this.store.addToCart(formData).subscribe({
+				next: (res) => {
 					if ( res.data.cart ) { this.customer.setCart(res.data.cart); }
 					if( res.status ){
 						this.toastr.success(res.message);
@@ -306,10 +327,10 @@ export class CmsComponent implements OnInit {
 						this.toastr.error(res.message);
 					}
 				},
-				(err: HttpErrorResponse) => {
+				error: (err) => {
 					this.toastr.error("Sorry, there are some app issue!");
 				}
-			);				
+			});				
 		} else {
 			//localStorage.setItem('productId', item.id);
 			//this.router.navigate(['/registration']);
@@ -343,8 +364,8 @@ export class CmsComponent implements OnInit {
 	getReviews(page) {
 		this.reviewsLoader = 'Loading...';
 		let param = {productId: this.result.id, page:page, order: this.reviewOrder };
-		this.product.getProductReviews(param).subscribe(
-            res => {
+		this.product.getProductReviews(param).subscribe({
+            next: (res) => {
 				if(res.data.total > 0){
 					if ( this.reviewsPage == 1 ) {
 						this.reviewsList = [];
@@ -356,14 +377,14 @@ export class CmsComponent implements OnInit {
 				this.moreReviewsFlag = res.data.viewMore;
 				this.reviewsLoader   = '';
             },
-            (err: HttpErrorResponse) => {
+            error: (err) => {
                 if(err.error instanceof Error){
                     console.log('Client Error: '+err.error.message);
                 }else{
                     console.log(`Server Error: ${err.status}, body was: ${JSON.stringify(err.error)}`);
                 }
             }
-        );
+		});
 	}
 	
 	loadMoreReviews(){
@@ -396,8 +417,8 @@ export class CmsComponent implements OnInit {
 		formData.itemId = this.result.id;
 		formData.rating = this.reviewSelected;
 		if( this.userId > 0 ){
-			this.customer.addReviews(formData).subscribe(
-				res => {
+			this.customer.addReviews(formData).subscribe({
+				next: (res) => {
 					if(res.status){
 						this.reviewStatus = 2;
 						this.reviewForm = new FormGroup ({
@@ -408,10 +429,10 @@ export class CmsComponent implements OnInit {
 					}
 					this.reviewMsg = res.message;
 				},
-				(err: HttpErrorResponse) => {
+				error: (err) => {
 					this.reviewMsg = "Sorry, there are some app issue!";
 				}
-			);
+			});
 		}else{
 			this.router.navigate(['/customer/login'], {queryParams:{}});
 		}

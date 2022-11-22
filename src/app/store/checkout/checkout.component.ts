@@ -19,15 +19,15 @@ import { TrackingService } from './../../_services/tracking.service';
 	encapsulation: ViewEncapsulation.None
 })
 export class CheckoutComponent implements OnInit, DoCheck {
-	@ViewChild('hideDeleteModal', {static: false}) hideDeleteModal: ElementRef;
-	rForm:FormGroup;  
-	methodForm:FormGroup;
-	userTypeForm:FormGroup;
-	loginForm:FormGroup;
-	registerForm:FormGroup;
+	@ViewChild('hideDeleteModal', {static: false}) hideDeleteModal: any;
+	rForm:any;  
+	methodForm:any;
+	userTypeForm:any;
+	loginForm:any;
+	registerForm:any;
 	shoppingCart = [];
 	shoppingPack = [];
-	cartCurrency;
+	cartCurrency:string = '';
 	cartTotal = 0.00;
 	serverRequest = false;
 	addresses = [];
@@ -99,7 +99,7 @@ export class CheckoutComponent implements OnInit, DoCheck {
 			mobile:'',
 			set_default:0
 		};
-		
+		this.hideDeleteModal = ElementRef;
 	}
 
 	ngOnInit() {
@@ -143,6 +143,7 @@ export class CheckoutComponent implements OnInit, DoCheck {
 				return {'username': true};
 			}
 		}
+		return {'username': false};
 	}
 	
 	getBack() {
@@ -154,8 +155,8 @@ export class CheckoutComponent implements OnInit, DoCheck {
 	customerLogin(formData){
 		this.myFormData		= formData;
 		let formAction= 1;
-		if ( this.loginForm.controls.username.invalid || (formData.username == '') ){
-			this.loginForm.controls.username.markAsDirty();
+		if ( this.loginForm.controls['username'].invalid || (formData.username == '') ){
+			this.loginForm.controls['username'].markAsDirty();
 			if ( this.isEmail == 1 ) {
 				this.resObj.message = 'Please enter valid email id!';
 			} else {
@@ -188,9 +189,8 @@ export class CheckoutComponent implements OnInit, DoCheck {
 				let carItemQuantities = myCart['shopping']['cart'].map( (item) => { return item.cart_quantity; });
 				formData.productId = carItemIds.join(',');
 				formData.quantity = carItemQuantities.join(',');				
-				this.customer.signIn(formData).subscribe(
-					(res)=> {
-						this.serverRequest = false;
+				this.customer.signIn(formData).subscribe({
+					next: (res)=> {
 						if(res.status){
 							if(this.isStep == 2){
 								this.customer.setAccount(res.data);
@@ -212,16 +212,18 @@ export class CheckoutComponent implements OnInit, DoCheck {
 							}
 						}
 					},
-					(err: HttpErrorResponse) => {
-						this.serverRequest = false;
+					error: (err: HttpErrorResponse) => {
 						this.resObj.otpClass = 'text-danger resend_otp';
 						if(err.error instanceof Error){
 							this.resObj.message = 'Client error: '+err.error.message;
 						}else{
 							this.resObj.message = 'Server error: There are some server issue.';
 						}
+					},
+					complete: () => {
+						this.serverRequest = false;
 					}
-				);
+				});
 			} else {
 				this.toastr.warning("Please wait ...");
 			}
@@ -235,9 +237,9 @@ export class CheckoutComponent implements OnInit, DoCheck {
 		this.resObj.otpClass = 'text-warning';
 		this.myFormData.isStep = 1;
 		this.myFormData.otp = '';
-		this.loginForm.controls.otp.setValue('', {});
-		this.customer.signIn(this.myFormData).subscribe(
-			(res)=> {
+		this.loginForm.controls['otp'].setValue('', {});
+		this.customer.signIn(this.myFormData).subscribe({
+			next: (res)=> {
 				if(res.status){
 					this.resObj.otpMessage = '';
 					this.resObj.textClass = '';
@@ -247,7 +249,7 @@ export class CheckoutComponent implements OnInit, DoCheck {
 					this.resObj.message = res.message;
 				}
 			},
-			(err: HttpErrorResponse) => {
+			error: (err: HttpErrorResponse) => {
 				this.resObj.otpClass = 'text-danger resend_otp';
 				if(err.error instanceof Error){
 					this.resObj.message = 'Client error: '+err.error.message;
@@ -255,29 +257,29 @@ export class CheckoutComponent implements OnInit, DoCheck {
 					this.resObj.message = 'Server error: '+JSON.stringify(err.error);
 				}
 			}
-		);
+		});
 	}
 
 	customerRegister( formData ) { 
 		formData.isStep = this.isStep;
 		this.myFormData	= formData;
 		let formAction = 1;
-		if( this.registerForm.controls.username.invalid || (formData.username == '') ){
-			this.registerForm.controls.username.markAsDirty();
+		if( this.registerForm.controls['username'].invalid || (formData.username == '') ){
+			this.registerForm.controls['username'].markAsDirty();
 			this.resObj['message'] = 'Please enter user name!';
 			this.resObj['textClass'] = 'text-danger';
 			formAction	= 0;
 		}
-		if( this.registerForm.controls.mobile.invalid || !this.config.MOBILE_REGEXP.test(formData.mobile) ){
-			this.registerForm.controls.mobile.markAsDirty();
+		if( this.registerForm.controls['mobile'].invalid || !this.config.MOBILE_REGEXP.test(formData.mobile) ){
+			this.registerForm.controls['mobile'].markAsDirty();
 			this.resObj['message'] = 'Please enter 10 digits mobile number!';
 			this.resObj['textClass'] = 'text-danger';
 			formAction	= 0;
 		}
-		if( this.registerForm.controls.email.invalid || (formData.email == "") ){
+		if( this.registerForm.controls['email'].invalid || (formData.email == "") ){
 			this.resObj['message'] = 'Please enter a valid email id!';
 			this.resObj['textClass'] = 'text-danger';
-			this.registerForm.controls.email.markAsDirty();
+			this.registerForm.controls['email'].markAsDirty();
 			formAction	= 0;
 		}
 		if( (formData.username == '') || (formData.username == '') || (formData.email == "") ){
@@ -314,9 +316,8 @@ export class CheckoutComponent implements OnInit, DoCheck {
 				let carItemQuantities = myCart['shopping']['cart'].map( (item) => { return item.cart_quantity; });
 				formData.productId = carItemIds.join(',');
 				formData.quantity = carItemQuantities.join(',');				
-				this.customer.signUp(formData).subscribe(
-					res => {
-						this.serverRequest = false;
+				this.customer.signUp(formData).subscribe({
+					next: (res) => {
 						if ( res.status ) {
 							if ( this.isStep == 2 ) {
 								this.customer.setAccount(res.data);
@@ -338,16 +339,18 @@ export class CheckoutComponent implements OnInit, DoCheck {
 							}
 						}
 					},
-					(err: HttpErrorResponse) => {
-						this.serverRequest = false;
+					error: (err: HttpErrorResponse) => {
 						this.resObj['otpClass'] = 'text-danger';
 						if(err.error instanceof Error){
 							this.resObj['message'] = 'Client error: '+err.error.message;
 						}else{
 							this.resObj['message'] = 'Server error: There are some server issue!';
 						}
+					},
+					complete: () => {
+						this.serverRequest = false;
 					}
-				);
+				});
 			}			
 		}
 		return true;
@@ -358,12 +361,11 @@ export class CheckoutComponent implements OnInit, DoCheck {
 		this.resObj['otpClass'] = 'text-warning';
 		this.myFormData.isStep = 1;
 		this.myFormData.otp = '';
-		this.registerForm.controls.otp.setValue('', {});
+		this.registerForm.controls['otp'].setValue('', {});
 		if( this.serverRequest == false ){
 			this.serverRequest = true;
-			this.customer.signUp(this.myFormData).subscribe(
-				(res)=> {
-					this.serverRequest = false;
+			this.customer.signUp(this.myFormData).subscribe({
+				next: (res)=> {
 					if(res.status){
 						this.resObj['otpMessage'] = '';
 						this.resObj['textClass'] = '';
@@ -374,28 +376,30 @@ export class CheckoutComponent implements OnInit, DoCheck {
 						this.resObj['message'] = res.message;
 					}
 				},
-				(err: HttpErrorResponse) => {
-					this.serverRequest = false;
+				error: (err: HttpErrorResponse) => {
 					this.resObj['otpClass'] = 'text-danger';
 					if(err.error instanceof Error){
 						this.resObj['message'] = 'Client error: '+err.error.message;
 					}else{
 						this.resObj['message'] = 'Server error: There are some server issue!';
 					}
+				},
+				complete: () => {
+					this.serverRequest = false;
 				}
-			);
+			});
 		}
 	}
 		
 	ngDoCheck() {
 		let EMAIL_REGEXP = /^[_a-z0-9]+(\.[_a-z0-9]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$/;
 		let MOBILE_REGEXP = /^[1-9]{1}[0-9]{9}$/;
-		let loginStatusType = this.userTypeForm.controls.loginStatusType.value;
+		let loginStatusType = this.userTypeForm.controls['loginStatusType'].value;
 		let newUsername, newOtp, newEmail;
 		if ( loginStatusType == 'olduser' ) {
-			newUsername = this.loginForm.controls.username.value;
-			newOtp = this.loginForm.controls.otp.value;
-			this.loginForm.controls.username.setValue(newUsername.toLowerCase(), {});
+			newUsername = this.loginForm.controls['username'].value;
+			newOtp = this.loginForm.controls['otp'].value;
+			this.loginForm.controls['username'].setValue(newUsername.toLowerCase(), {});
 			if( EMAIL_REGEXP.test(newUsername) ) {
 				this.isEmail = 1;
 			}
@@ -407,11 +411,11 @@ export class CheckoutComponent implements OnInit, DoCheck {
 				this.oldUsername = newUsername;
 			}
 		} else {
-			newUsername = this.registerForm.controls.username.value;
-			newEmail = this.registerForm.controls.email.value;
-			let newMobile = this.registerForm.controls.mobile.value;
-			newOtp = this.registerForm.controls.otp.value;
-			this.registerForm.controls.email.setValue(newEmail.toLowerCase(), {});
+			newUsername = this.registerForm.controls['username'].value;
+			newEmail = this.registerForm.controls['email'].value;
+			let newMobile = this.registerForm.controls['mobile'].value;
+			newOtp = this.registerForm.controls['otp'].value;
+			this.registerForm.controls['email'].setValue(newEmail.toLowerCase(), {});
 			if ( (this.oldUsername != newUsername) || (this.oldEmail != newEmail) || (this.oldMobile != newMobile) ) {
 				this.oldUsername = newUsername;
 				this.oldEmail = newEmail;
@@ -474,8 +478,8 @@ export class CheckoutComponent implements OnInit, DoCheck {
 	}
 	
 	getAddresses() {
-		this.customer.getAddresses().subscribe(
-			res => {
+		this.customer.getAddresses().subscribe({
+			next: (res) => {
 				this.addresses = res.data; //this.addresses['address'] = [];
 				if( this.addresses['address'] && this.addresses['address'].length > 0 ){
 					for( let item of this.addresses['address'] ){
@@ -498,10 +502,10 @@ export class CheckoutComponent implements OnInit, DoCheck {
 					this.initAddressForm(this.initAddress);
 				}
 			},
-			(err: HttpErrorResponse) => {
+			error: (err) => {
 				console.log("Server Isse!");
 			}
-		);
+		});
 	}
 	
 	editAddress(item){
@@ -533,14 +537,13 @@ export class CheckoutComponent implements OnInit, DoCheck {
 		if( (this.serverRequest == false)  ) { //&& ( checkForm == true )
  			this.addressResponse = { message: '<i class="fa fa-spinner fa-spin"></i>', textClass:'text-danger' };
 			this.serverRequest = true;
-			this.store.checkPincode(formData.pincode).subscribe(
-				res => { //console.log(res);
+			this.store.checkPincode(formData.pincode).subscribe({
+				next: (res) => { //console.log(res);
 					this.pincodeStatus = res.status; // 1 both, 2 prepaid, 3 postpaid, 0 not
 					if( this.pincodeStatus > 0 ) {
 						formData.setdefault = 1;
-						this.customer.addAddresses(formData).subscribe(
-							res => {
-								this.serverRequest = false;
+						this.customer.addAddresses(formData).subscribe({
+							next: (res) => {
 								if( res.status ){
 									this.addresses = res.data;
 									if( this.addresses['address'].length > 0 ){
@@ -561,7 +564,7 @@ export class CheckoutComponent implements OnInit, DoCheck {
 									this.addressResponse = { message:res.message, textClass:'text-danger' };
 								}
 							},
-							(err: HttpErrorResponse) => {
+							error: (err: HttpErrorResponse) => {
 								var message = '';
 								if(err.error instanceof Error){
 									message = 'Client error: '+err.error.message;
@@ -569,19 +572,21 @@ export class CheckoutComponent implements OnInit, DoCheck {
 									message = 'Server error: '+JSON.stringify(err.error);
 								}
 								this.addressResponse = { message:message, textClass:'text-danger' };
+							},
+							complete: () => {
 								this.serverRequest = false;
 							}
-						);
+						});
 					} else {
 						this.addressResponse = { message:res.message, textClass:'text-danger' };
 						this.serverRequest = false;
 					}
 				},
-				(err: HttpErrorResponse) => {
+				error: (err) => {
 					this.addressResponse = { message:'Sorry, may be network issue, please refresh page!', textClass:'text-danger' };
 					this.serverRequest = false;
 				}
-			);
+			});
 		} else if ( checkForm == false ) {	
 			this.addressResponse = { message: 'Please enter !', textClass:'text-danger' };
 		} else {
@@ -592,8 +597,8 @@ export class CheckoutComponent implements OnInit, DoCheck {
 	getMyCart () {
 		let myCart = this.customer.getFromCart();
 		this.inputData['shopping'] = myCart['shopping'];
-		this.store.getCart(this.inputData).subscribe(
-			res => {
+		this.store.getCart(this.inputData).subscribe({
+			next: (res) => {
 				if ( res.status && res.data['shopping'] ) {
 					this.cartCurrency   = res.data.currency;
 					this.cartTotal   	= res.data.cart_total;
@@ -612,9 +617,9 @@ export class CheckoutComponent implements OnInit, DoCheck {
 						this.inputData['paymentMethodSelected'] = '';
 					}
 					for(let i of this.paymentMethodData){
-						if( i.id == this.inputData['paymentMethod'] ){
-							this.inputData['paymentMethodSelected'] = i.title;
-							this.inputData['paymentCode'] = i.code;
+						if( i['id'] == this.inputData['paymentMethod'] ){
+							this.inputData['paymentMethodSelected'] = i['title'];
+							this.inputData['paymentCode'] = i['code'];
 							break;
 						}
 					}
@@ -625,23 +630,23 @@ export class CheckoutComponent implements OnInit, DoCheck {
 					this.router.navigate(['/checkout/cart'],{});
 				}		
 			},
-			(err: HttpErrorResponse) => {
+			error: (err: HttpErrorResponse) => {
 				if(err.error instanceof Error){
 					console.log('Client Error: '+err.error.message);
 				}else{
 					console.log(`Server Error: ${err.status}, body was: ${JSON.stringify(err.error)}`);
 				}
 			}
-		);	
+		});	
 	}
 
 	onSelectionChange(value:number){
 		this.inputData['paymentMethod'] = value;
 		this.methodForm.patchValue({paymentMethod:value});
 		for(let i of this.paymentMethodData){
-			if( i.id == value ){
-				this.inputData['paymentMethodSelected'] = i.title;
-				this.inputData['paymentCode'] = i.code;
+			if( i['id'] == value ){
+				this.inputData['paymentMethodSelected'] = i['title'];
+				this.inputData['paymentCode'] = i['code'];
 				break;
 			}
 		}
@@ -662,19 +667,19 @@ export class CheckoutComponent implements OnInit, DoCheck {
             mobile: this.selectedAddress['mobile'],
             amount: this.grandFinalTotal
         };
-        this.store.getOtp(formData).subscribe(
-            res => {
+        this.store.getOtp(formData).subscribe({
+            next: (res) => {
                 if ( res.status ) {
                     this.otpResponse['textClass'] = 'text-success';
                 } else {
                     this.otpResponse['textClass']= 'text-danger';
                 }
                 this.otpResponse['message'] = res.message;
-            }, (err: HttpErrorResponse) => {
+            }, error: (err) => {
                 this.otpResponse['textClass'] = 'text-danger';
                 this.otpResponse['message'] = 'Sorry, there are some app issue!';
             }
-        );
+        });
         return true;
     }
 
@@ -686,8 +691,8 @@ export class CheckoutComponent implements OnInit, DoCheck {
                 userId: this.userId,
                 otp: this.otpResponse['otp']
             };
-            this.store.verifyOtp(formData).subscribe(
-                res => {
+            this.store.verifyOtp(formData).subscribe({
+                next: (res) => {
                     if ( res.status ) {
                         this.otpResponse['textClass'] = 'text-warning';
 						this.elem.nativeElement.querySelector('#closeOtpPopup').click();
@@ -696,11 +701,11 @@ export class CheckoutComponent implements OnInit, DoCheck {
                         this.otpResponse['textClass'] = 'text-danger';
                     }
                     this.otpResponse['message'] = res.message;
-                }, (err: HttpErrorResponse) => {
+                }, error: (err) => {
                     this.otpResponse['textClass'] = 'text-danger';
                     this.otpResponse['message'] = 'Sorry, there are some app issue!';
                 }
-            );
+            });
         } else {
             this.otpResponse['textClass'] = 'text-danger';
             this.otpResponse['message'] = 'Please enter otp number!';
@@ -717,7 +722,7 @@ export class CheckoutComponent implements OnInit, DoCheck {
 			this.finalStatus = false;
 		}
 		if( this.methodForm.value.paymentMethod == '' || this.methodForm.value.paymentMethod == 0 ){
-			this.methodForm.controls.paymentMethod.markAsDirty();
+			this.methodForm.controls['paymentMethod'].markAsDirty();
 			this.finalStatus = false;
 		}
 		//console.log(this.methodForm.value.paymentMethod);
@@ -753,8 +758,8 @@ export class CheckoutComponent implements OnInit, DoCheck {
 			
 			//console.log(this.inputData);
 			this.orderPlaceStatus = 1;
-			this.store.saveOrderDetails(this.inputData).subscribe(
-			  res => {
+			this.store.saveOrderDetails(this.inputData).subscribe({
+			  next: (res) => {
 				this.orderPlaceStatus = 0;
 				if ( res.status ) {
 				  this.orderId = res.data.orderNumber;
@@ -767,21 +772,21 @@ export class CheckoutComponent implements OnInit, DoCheck {
 				  this.finalMessage = res.message;
 				}
 			  },
-			  (err: HttpErrorResponse) => {
+			  error: (err: HttpErrorResponse) => {
 				if(err.error instanceof Error){
 				  console.log('Client Error: '+err.error.message);
 				}else{
 				  console.log(`Server Error: ${err.status}, body was: ${JSON.stringify(err.error)}`);
 				}
 			  }
-			);
+			});
 		} else {
 			this.finalMessage = 'Please wait process running...';
 		}
 		return false;
 	}
 
-    upperToLower(event, fieldName){
+    upperToLower(event:any, fieldName:string){
 	    (<FormControl>this.rForm.controls[fieldName]).setValue(event.target.value.toLowerCase(), {});
 	}
 	

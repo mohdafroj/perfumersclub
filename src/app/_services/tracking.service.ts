@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { StoreService } from './pb/store.service';
 import { Myconfig } from './pb/myconfig';
-declare let dataLayer: [any];
+declare var dataLayer: [any];
 
 @Injectable({
 	providedIn:'root'
@@ -23,7 +23,7 @@ export class TrackingService {
 	
 	clickProduct(items) {
 		if( Object.keys(items).length > 0 ){
-			let products = [];
+			let products:any = [];
 			products.push({
 				id         : items.id,
 				name       : items.name,
@@ -60,7 +60,7 @@ export class TrackingService {
 	
 	addToCart (items) {
 		if( Object.keys(items).length > 0 ){
-			let products = [];
+			let products:any = [];
 			products.push({
 				'id'		:items.id,
 				'name'		:items.name,
@@ -89,7 +89,7 @@ export class TrackingService {
 	
 	removeFromCart(items){
 		if( Object.keys(items).length > 0 ) {
-			let products = [];
+			let products:any = [];
 			products.push({
 				'id'		:items.id,
 				'name'		:items.name,
@@ -119,7 +119,7 @@ export class TrackingService {
 		var trackData = this.store.getTrackingData();
 		if( Object.keys(trackData).length ) {
 			let shopping 	=  trackData['shopping'] ? trackData['shopping'] : [];			
-			let products = [];
+			let products:any = [];
 			let shoppingCart = shopping['cart'] ? shopping['cart'] : [];
 			//console.log(shopping);
 			for( let i = 0; i < shoppingCart.length; i++ ){

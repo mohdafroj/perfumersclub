@@ -14,7 +14,7 @@ export class NotifymeComponent implements OnInit, OnDestroy {
     notifymeClass			= '';
 	userId = 0;
 	productId = 0;
-	subscription: Subscription;
+	subscription;
   constructor(
     private elem: ElementRef,
 	private products: ProductsService,
@@ -38,8 +38,8 @@ export class NotifymeComponent implements OnInit, OnDestroy {
         const email = this.elem.nativeElement.querySelector('#notifyemail').value;
         if ( EMAIL_REGEXP.test(email) ) {
             const formData: any = {productId: this.productId, email: email};
-            this.products.notifyMe(formData).subscribe(
-                res => {
+            this.products.notifyMe(formData).subscribe({
+                next: (res) => {
                     if ( res.status ) {
                         this.notifymeClass = 'success_msz';
                     } else {
@@ -47,11 +47,11 @@ export class NotifymeComponent implements OnInit, OnDestroy {
                     }
                     this.notifymeMsg = res.message;
                 },
-                (err: HttpErrorResponse) => {
+                error: (err) => {
                     this.notifymeClass = 'error_msz';
                     this.notifymeMsg = 'Sorry, there are some app issue!';
                 }
-            );
+            });
         } else {
             this.notifymeClass = 'error_msz';
             this.notifymeMsg = 'Please enter valid email id!';

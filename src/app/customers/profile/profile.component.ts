@@ -14,8 +14,8 @@ import { CustomerService } from '../../_services/pb/customer.service';
 })
 export class ProfileComponent implements OnInit {
 	response: any;
-	state: string;
-	refLink: string;
+	state;
+	refLink;
 	modulePath = '';
 	constructor (
 		private elem: ElementRef, 
@@ -27,11 +27,8 @@ export class ProfileComponent implements OnInit {
     }
 
   ngOnInit() {
-	this.config.scrollToTop();
+	  this.config.scrollToTop();
     this.refLink = window.location.origin;
-    if(window.location.href.indexOf('/new/') > -1){
-      this.refLink = this.refLink+'/new';
-    }
 	//ClipBoard.test();
 	//(window as any).copyTextToClipboard('my clipboard copy test');
     this.response = {
@@ -45,17 +42,17 @@ export class ProfileComponent implements OnInit {
       created:'',
       modified:''
     };
-    this.customer.getProfile().subscribe(
-      res => { 
+    this.customer.getProfile().subscribe({
+      next: (res) => { 
         if(res.status){
           this.response = res.data;
           this.refLink = this.refLink+'/customer/registration?ref='+this.customer.getId();		  
         }
       },
-      (err: HttpErrorResponse) => {
+      error: (err) => {
         console.log("Server Isse!");
       }
-    );	
+    });	
   }
 
 	copyLink(){

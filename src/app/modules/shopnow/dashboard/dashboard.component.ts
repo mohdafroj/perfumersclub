@@ -11,7 +11,7 @@ import { TrackingService } from './../../../_services/tracking.service';
 import { Myconfig } from './../../../_services/pb/myconfig';
 import SwiperCore , { Pagination, SwiperOptions, FreeMode } from 'swiper';
 //import 'swiper/css/bundle';
-import 'swiper/css';
+//import 'swiper/css';
 SwiperCore.use([Pagination,FreeMode]);
 
 @Component({
@@ -48,7 +48,7 @@ export class DashboardComponent implements OnInit {
 	selectedIndex = 0;
 	sliderConfig = {};
 	sliderIndex = 0;
-	@ViewChild('deleteConfirmModal', {static: false}) deleteConfirmModal: ElementRef;
+	@ViewChild('deleteConfirmModal', {static: false}) deleteConfirmModal: any;
 	cartTotal = 0;
 	cartLength = 0;
 	shoppingCart = [];
@@ -101,13 +101,13 @@ s
 		private product: ProductsService
 	) { 
 		this.sanitizer = sanitize;
+		this.deleteConfirmModal = ElementRef;
 	}
 
     ngOnInit() {
 		let checkUrl = this.router.url.split("?");
 		checkUrl = checkUrl[0].split("/");
-		this.basePath = checkUrl[1];
-		this.config.scrollToTop();
+		this.basePath = checkUrl[1];		
 		this.userId = this.customer.getId(); //this.customer.doEmptyCart();
 		let myCart = this.customer.getFromCart();
 		this.customerCart = myCart['shopping']['cart'].map( (item) => { return item.id; });
@@ -125,13 +125,14 @@ s
 			} else {
 				this.genderFilter();
 			}
+			this.config.scrollToBottom(400,100);
 		});  
 		this.getProductList();
 	}
 	
 	getProductList () {
 		this.resultStatus   = 0;
-		let offerCoupon = this.config.getOfferCoupon();
+		let offerCoupon = this.config.getOfferCoupon() || '';
 		let inputData = this.store.getCartInfo();
 		if ( offerCoupon != '' ) {
 			inputData['couponCode'] = offerCoupon;
@@ -139,8 +140,8 @@ s
 		}
 		let prms = new HttpParams();
 		prms = prms.append('offerCoupon', offerCoupon);
-		this.product.getProducts(prms, 'shopnow').subscribe(
-            res => {
+		this.product.getProducts(prms, 'shopnow').subscribe({
+            next: (res) => {
                 if(res.status){
 					this.productsList1 = res.data['productsList1'];
 					this.productsList2 = res.data['productsList2'];
@@ -163,17 +164,18 @@ s
 							this.filterProducts = this.productsList;					}
 				}
 				this.resultMsg = res.message;
-				this.resultStatus = 1;
             },
-            (err: HttpErrorResponse) => {
+            error: (err: HttpErrorResponse) => {
                 if(err.error instanceof Error){
 					this.resultMsg = err.error.message;
                 }else{
 					this.resultMsg = JSON.stringify(err.error);
                 }
+            },
+			complete: () => {
 				this.resultStatus = 1;
-            }
-        );
+			}
+        });
     }
 	categoryChange( argt ) {
 		this.router.navigate(['/', this.basePath],{queryParams:{ type:argt}});
@@ -199,24 +201,24 @@ s
 	genderFilter () {
 		switch (this.productType) {
 			case this.config.categories.category1.key:
-				this.filterProducts = this.productsList1.filter( (item) => { return item.gender == this.gender; }, this.gender);
+				this.filterProducts = this.productsList1.filter( (item) => { return item['gender'] == this.gender; }, this.gender);
 				break;
 			case this.config.categories.category2.key:
-				this.filterProducts = this.productsList2.filter( (item) => { return item.gender == this.gender; }, this.gender);
+				this.filterProducts = this.productsList2.filter( (item) => { return item['gender'] == this.gender; }, this.gender);
 				break;
 			case this.config.categories.category3.key:
-				this.filterProducts = this.productsList3.filter( (item) => { return item.gender == this.gender; }, this.gender);
+				this.filterProducts = this.productsList3.filter( (item) => { return item['gender'] == this.gender; }, this.gender);
 				break;
 			case this.config.categories.category4.key:
-				this.filterProducts = this.productsList4.filter( (item) => { return item.gender == this.gender; }, this.gender);
+				this.filterProducts = this.productsList4.filter( (item) => { return item['gender'] == this.gender; }, this.gender);
 				break;
 			case this.config.categories.category5.key:
-				this.filterProducts = this.productsList5.filter( (item) => { return item.gender == this.gender; }, this.gender);
+				this.filterProducts = this.productsList5.filter( (item) => { return item['gender'] == this.gender; }, this.gender);
 				break;
 			case this.config.categories.category6.key:
-				this.filterProducts = this.productsList6.filter( (item) => { return item.gender == this.gender; }, this.gender);
+				this.filterProducts = this.productsList6.filter( (item) => { return item['gender'] == this.gender; }, this.gender);
 				break;
-			default: this.filterProducts = this.productsList.filter( (item) => { return item.gender == this.gender; }, this.gender);
+			default: this.filterProducts = this.productsList.filter( (item) => { return item['gender'] == this.gender; }, this.gender);
 
 		}
 		return true;
@@ -228,45 +230,45 @@ s
 				if ( this.gender == '' ) {
 					this.filterProducts = this.productsList1;
 				} else {
-					this.filterProducts = this.productsList1.filter( (item) => { return item.gender == this.gender; }, this.gender);
+					this.filterProducts = this.productsList1.filter( (item) => { return item['gender'] == this.gender; }, this.gender);
 				}
 				break;
 			case this.config.categories.category2.key:
 				if ( this.gender == '' ) {
 					this.filterProducts = this.productsList2;
 				} else {
-					this.filterProducts = this.productsList2.filter( (item) => { return item.gender == this.gender; }, this.gender);
+					this.filterProducts = this.productsList2.filter( (item) => { return item['gender'] == this.gender; }, this.gender);
 				}
 				break;
 			case this.config.categories.category3.key:
 				if ( this.gender == '' ) {
 					this.filterProducts = this.productsList3;
 				} else {
-					this.filterProducts = this.productsList3.filter( (item) => { return item.gender == this.gender; }, this.gender);
+					this.filterProducts = this.productsList3.filter( (item) => { return item['gender'] == this.gender; }, this.gender);
 				}
 				break;
 			case this.config.categories.category4.key:
 				if ( this.gender == '' ) {
 					this.filterProducts = this.productsList4;
 				} else {
-					this.filterProducts = this.productsList4.filter( (item) => { return item.gender == this.gender; }, this.gender);
+					this.filterProducts = this.productsList4.filter( (item) => { return item['gender'] == this.gender; }, this.gender);
 				}
 				break;
 			case this.config.categories.category5.key:
 				if ( this.gender == '' ) {
 					this.filterProducts = this.productsList5;
 				} else {
-					this.filterProducts = this.productsList5.filter( (item) => { return item.gender == this.gender; }, this.gender);
+					this.filterProducts = this.productsList5.filter( (item) => { return item['gender'] == this.gender; }, this.gender);
 				}
 				break;
 			case this.config.categories.category6.key:
 				if ( this.gender == '' ) {
 					this.filterProducts = this.productsList6;
 				} else {
-					this.filterProducts = this.productsList6.filter( (item) => { return item.gender == this.gender; }, this.gender);
+					this.filterProducts = this.productsList6.filter( (item) => { return item['gender'] == this.gender; }, this.gender);
 				}
 				break;
-			default: this.filterProducts = this.productsList.filter( (item) => { return item.gender == this.gender; }, this.gender);
+			default: this.filterProducts = this.productsList.filter( (item) => { return item['gender'] == this.gender; }, this.gender);
 
 		}
 		return true;

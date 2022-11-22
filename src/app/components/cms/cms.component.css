@@ -91,8 +91,11 @@ div[class*="col-"].popupImageSlider ul li.active{background-color: #FF5151;}
 .aPlusRowMain .itemCatDes > *{margin: 0;}
 .aPlusRowMain .itemCatDes > *:not(:last-child){margin-bottom: 1.2rem;}
 .aPlusRowMain .itemCatDes figure{position: relative;}
-.aPlusRowMain .itemCatDes figure .figure-caption{font-size: 1rem; padding: 0 .8rem; color: #FFFFFF; margin: 0; position: absolute; bottom: 1rem; left: 0; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; line-height: 1.3;}
-.aPlusRowMain .itemCatDes figure .figure-caption span{color: #FF5151; font-size: .65rem; text-transform: uppercase; margin-bottom: .3rem; letter-spacing: .1rem;}
+/*.aPlusRowMain .itemCatDes figure:before{content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: url("../images/imgGradient.png"); background-repeat: no-repeat; z-index: 1;}*/
+
+.aPlusRowMain .itemCatDes figure .figure-caption{font-size: 1rem; padding: 0 .8rem; color: #FFFFFF; margin: 0; position: absolute; bottom: 1rem; left: 0; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; line-height: 1.3; z-index: 2;}
+/*.aPlusRowMain .itemCatDes figure .figure-caption:before{content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: linear-gradient(to bottom, rgba(0,0,0,0), rgba(0,0,0,.8), rgba(0,0,0,0)); z-index: -1;}*/
+.aPlusRowMain .itemCatDes figure .figure-caption span{color: #FF5151; font-size: .8rem; text-transform: uppercase; margin-bottom: .3rem; letter-spacing: .1rem;}
 .aPlusRowMain .itemCatDes p{font-size: 1rem; color: #172026; line-height: 1.5; font-family: 'Work Sans', sans-serif; text-align: center; padding: 0 1rem;}
 /******* end of aPlusRowMain ******/
 
@@ -136,6 +139,7 @@ div[class*="col-"].popupImageSlider ul li.active{background-color: #FF5151;}
 	/******* start of aPlusRowMain *******/
 	.aPlusRowMain{padding: .5rem 0; position: relative;}
 	.aPlusRowMain .itemCatDes{padding: 0;}
+	.aPlusRowMain .itemCatDes figure .figure-caption span{font-size: .9rem; letter-spacing: .05rem; font-weight: 600;}
 	/******* end of aPlusRowMain ******/
 
 }

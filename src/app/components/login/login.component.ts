@@ -17,7 +17,7 @@ import { ToastrService } from 'ngx-toastr';
 	encapsulation: ViewEncapsulation.None
 })
 export class LoginComponent implements OnInit,DoCheck {
-	loginForm:FormGroup;
+	loginForm;
 	myFormData: any;
 	oldUsername: any;
 	oldOtp: any;
@@ -133,8 +133,8 @@ export class LoginComponent implements OnInit,DoCheck {
 			}
 			if ( this.serverRequest ) {
 				this.serverRequest = false;
-				this.customer.signIn(formData).subscribe(
-					(res)=> {
+				this.customer.signIn(formData).subscribe({
+					next: (res)=> {
 						this.serverRequest = true;
 						if(res.status){
 							if(this.isStep == 2){
@@ -162,7 +162,7 @@ export class LoginComponent implements OnInit,DoCheck {
 							}
 						}
 					},
-					(err: HttpErrorResponse) => {
+					error: (err) => {
 						this.serverRequest = true;
 						this.resObj.otpClass = 'text-danger resend_otp';
 						if(err.error instanceof Error){
@@ -171,7 +171,7 @@ export class LoginComponent implements OnInit,DoCheck {
 							this.resObj.message = 'Server error: There are some server issue.';
 						}
 					}
-				);
+				});
 			} else {
 				this.toastr.warning("Please wait ...");
 			}
@@ -194,8 +194,8 @@ export class LoginComponent implements OnInit,DoCheck {
 		this.myFormData.isStep = 1;
 		this.myFormData.otp = '';
 		this.loginForm.controls.otp.setValue('', {});
-		this.customer.signIn(this.myFormData).subscribe(
-			(res)=> {
+		this.customer.signIn(this.myFormData).subscribe({
+			next: (res)=> {
 				if(res.status){
 					this.resObj.otpMessage = '';
 					this.resObj.class = '';
@@ -206,7 +206,7 @@ export class LoginComponent implements OnInit,DoCheck {
 					this.resObj.message = res.message;
 				}
 			},
-			(err: HttpErrorResponse) => {
+			error: (err) => {
 				this.resObj.otpClass = 'text-danger resend_otp';
 				if(err.error instanceof Error){
 					this.resObj.message = 'Client error: '+err.error.message;
@@ -214,7 +214,7 @@ export class LoginComponent implements OnInit,DoCheck {
 					this.resObj.message = 'Server error: '+JSON.stringify(err.error);
 				}
 			}
-		);
+		});
 	}
 
 	ngDoCheck() {

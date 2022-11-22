@@ -15,7 +15,7 @@ import { Subscription } from 'rxjs';
 export class ReviewsComponent implements OnInit, OnDestroy {
 	reviewMsg	= '';
 	reviewStatus = 0;
-	rForm: FormGroup;
+	rForm;
 	reviewSelected = 0;
 	reviewsList: any					= [];
 	reviewsLoader			        = '';
@@ -27,8 +27,8 @@ export class ReviewsComponent implements OnInit, OnDestroy {
     result = {id:0, reviews: [], progressRating: [] };
     @Input() userId = 0;
     sanitizer:any;
-	subscription: Subscription;
-	newReview = [];
+	subscription;
+	newReview:any = [];
   constructor (
     private router: Router,
 	private sanitize: DomSanitizer,
@@ -103,8 +103,8 @@ export class ReviewsComponent implements OnInit, OnDestroy {
 	getReviews(page) {
 		this.reviewsLoader = 'Loading...';
 		let param = {productId: this.result.id, page:page, order: 0 };
-		this.product.getProductReviews(param).subscribe(
-            res => {
+		this.product.getProductReviews(param).subscribe({
+            next: (res) => {
 				if(res.data.total > 0){
 					for( let i=0; i<res.data.total; i++ ){
 						this.reviewsList.push(res.data.reviews[i]);
@@ -113,14 +113,14 @@ export class ReviewsComponent implements OnInit, OnDestroy {
 				this.moreReviewsFlag = res.data.viewMore;
 				this.reviewsLoader   = '';
             },
-            (err: HttpErrorResponse) => {
+            error: (err) => {
                 if(err.error instanceof Error){
                     console.log('Client Error: '+err.error.message);
                 }else{
                     console.log(`Server Error: ${err.status}, body was: ${JSON.stringify(err.error)}`);
                 }
             }
-        );
+        });
 	}
 	
 	loadMoreReviews(){
@@ -140,9 +140,9 @@ export class ReviewsComponent implements OnInit, OnDestroy {
 	selectRating(review) {
 		this.reviewSelected = review;
 		this.newReview.forEach(function(item){
-			if ( item.rate == review ) { 
-				item.selected = 1;
-				item.color = 'rgb(238, 149, 145)';
+			if ( item['rate'] == review ) { 
+				item['selected'] = 1;
+				item['color'] = 'rgb(238, 149, 145)';
 			} else {
 				item.selected = 0;
 				item.color = 'rgb(59, 78, 118)';
@@ -156,8 +156,8 @@ export class ReviewsComponent implements OnInit, OnDestroy {
 		formData.itemId = this.result.id;
 		formData.rating = this.reviewSelected;
 		if( this.userId > 0 ){
-			this.customer.addReviews(formData).subscribe(
-				res => {
+			this.customer.addReviews(formData).subscribe({
+				next: (res) => {
 					if(res.status){
 						this.reviewStatus = 2;
 						this.rForm = new FormGroup ({
@@ -168,10 +168,10 @@ export class ReviewsComponent implements OnInit, OnDestroy {
 					}
 					this.reviewMsg = res.message;
 				},
-				(err: HttpErrorResponse) => {
+				error: (err) => {
 					this.reviewMsg = "Sorry, there are some app issue!";
 				}
-			);
+			});
 		}else{
 			this.router.navigate(['/customer/login'], {queryParams:{}});
 		}

@@ -15,10 +15,10 @@ import { ToastrService } from 'ngx-toastr';
   encapsulation: ViewEncapsulation.None
 })
 export class WishlistComponent implements OnInit {
-  msg:string;
+  msg;
   productId = 0;
   productIndex = -1;
-  wishlist = [];
+  wishlist:any = [];
   constructor(
 	private titleService: Title, 
 	private route: ActivatedRoute, 
@@ -26,7 +26,7 @@ export class WishlistComponent implements OnInit {
 	private toastr: ToastrService,
 	private customer: CustomerService) {
     route.data.subscribe(res =>{
-      titleService.setTitle(res.title);
+      titleService.setTitle(res['title']);
     });
   }
 
@@ -43,24 +43,24 @@ export class WishlistComponent implements OnInit {
   }
   updateWishlist(){
     let fd = {itemId: this.productId};
-    this.customer.updateWishlist(fd).subscribe(
-      res => {
+    this.customer.updateWishlist(fd).subscribe({
+      next: (res) => {
         if(res.status){
           for(let i=0; i < this.wishlist.length; i++ ){
             if( i == this.productIndex ){
               this.wishlist.splice(i,1); break;
-			  this.productId = 0;
-			  this.productIndex = -1;
+              this.productId = 0;
+              this.productIndex = -1;
             }
           }
         }else{
           this.toastr.error(res.message);
         }
       },
-      (err: HttpErrorResponse) => {
+      error: (err) => {
           this.toastr.error('Sorry, try later!');
       }
-    );
+    });
   }
   
 	addCart( item ) {

@@ -22,8 +22,8 @@ export class AccountComponent implements OnInit {
 	userId = 0;
 	formType = false;
 	myFormData: any;
-	loginForm: FormGroup;
-	registerForm: FormGroup;
+	loginForm;
+	registerForm;
 	oldUsername:any;
 	oldOtp:any;
 	isEmail:number 	= 0;
@@ -77,6 +77,7 @@ export class AccountComponent implements OnInit {
 				return {'username': true};
 			}
 		}
+		return {'username': false};
 	}
 
 	initLoginForm (usr, pwd, rqd) {
@@ -153,8 +154,8 @@ export class AccountComponent implements OnInit {
 			formData.isStep = this.isStep;
 			if ( this.serverRequest ) {
 				this.serverRequest = false;
-				this.customer.signIn(formData).subscribe(
-					(res)=> {
+				this.customer.signIn(formData).subscribe({
+					next: (res) => {
 						this.serverRequest = true;
 						if(res.status){
 							if(this.isStep == 2){
@@ -179,7 +180,7 @@ export class AccountComponent implements OnInit {
 							}
 						}
 					},
-					(err: HttpErrorResponse) => {
+					error: (err) => {
 						this.serverRequest = true;
 						this.resObj.otpClass = 'text-danger resend_otp';
 						if(err.error instanceof Error){
@@ -188,7 +189,7 @@ export class AccountComponent implements OnInit {
 							this.resObj.message = 'Server error: There are some server issue.';
 						}
 					}
-				);
+				});
 			} else {
 				this.toastr.warning("Please wait ...");
 			}
@@ -203,8 +204,8 @@ export class AccountComponent implements OnInit {
 		let formData = {username: name, otp: '', isStep: 1, isEmail: this.isEmail};
 		if ( this.serverRequest ) {
 			this.serverRequest = false;
-			this.customer.signIn(formData).subscribe(
-				(res)=> {
+			this.customer.signIn(formData).subscribe({
+				next: (res)=> {
 					this.serverRequest = true;
 					if(res.status){
 						this.resObj.otpMessage = '';
@@ -216,7 +217,7 @@ export class AccountComponent implements OnInit {
 						this.resObj.message = res.message;
 					}
 				},
-				(err: HttpErrorResponse) => {
+				error: (err) => {
 					this.serverRequest = true;
 					this.resObj.otpClass = 'text-danger resend_otp';
 					if(err.error instanceof Error){
@@ -225,7 +226,7 @@ export class AccountComponent implements OnInit {
 						this.resObj.message = 'Server error: There are some server issue!';
 					}
 				}
-			);
+			});
 		} else {
 			this.toastr.warning("Please wait ...");
 		}
@@ -277,8 +278,8 @@ export class AccountComponent implements OnInit {
 			if( this.serverRequest ){
 				this.serverRequest = false;
 				formData.gender = this.product.getGender();
-				this.customer.signUp(formData).subscribe(
-					res => {
+				this.customer.signUp(formData).subscribe({
+					next: (res) => {
 						//console.log(res);
 						this.serverRequest = true;
 						if ( res.status ) {
@@ -303,7 +304,7 @@ export class AccountComponent implements OnInit {
 							}
 						}
 					},
-					(err: HttpErrorResponse) => {
+					error: (err) => {
 						this.serverRequest = true;
 						this.resObj.otpClass = 'text-danger resend_otp';
 						if(err.error instanceof Error){
@@ -312,7 +313,7 @@ export class AccountComponent implements OnInit {
 							this.resObj.message = 'Server error: There are some server issue!';
 						}
 					}
-				);
+				});
 			}			
 		}
 		return true;
@@ -326,8 +327,8 @@ export class AccountComponent implements OnInit {
 		this.registerForm.controls.otp.setValue('', {});
 		if( this.serverRequest ){
 			this.serverRequest = false;
-			this.customer.signUp(this.myFormData).subscribe(
-				(res)=> {
+			this.customer.signUp(this.myFormData).subscribe({
+				next: (res)=> {
 					this.serverRequest = true;
 					if(res.status){
 						this.resObj.otpMessage = '';
@@ -339,7 +340,7 @@ export class AccountComponent implements OnInit {
 						this.resObj.message = res.message;
 					}
 				},
-				(err: HttpErrorResponse) => {
+				error: (err) => {
 					this.serverRequest = true;
 					this.resObj.otpClass = 'text-danger resend_otp';
 					if(err.error instanceof Error){
@@ -348,7 +349,7 @@ export class AccountComponent implements OnInit {
 						this.resObj.message = 'Server error: There are some server issue!';
 					}
 				}
-			);
+			});
 		}
 	}
 

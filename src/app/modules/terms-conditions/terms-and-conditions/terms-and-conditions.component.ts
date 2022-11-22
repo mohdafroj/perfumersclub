@@ -11,7 +11,7 @@ export class TermsAndConditionsComponent implements OnInit {
   constructor(private config:Myconfig) { }
 
   ngOnInit() {
-	this.config.scrollToTop();
+    this.config.scrollToBottom(10,10);
   }
 
 }

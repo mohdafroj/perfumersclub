@@ -28,13 +28,10 @@ export class PBInterceptor implements HttpInterceptor {
 		return next.handle(request).pipe(
 			tap( (event:HttpEvent<any>) => {
 			    if (event instanceof HttpResponse) {
-				   //console.log(event);
 			    }
 		    }, 
 		    (err: any) => {
 				if (err instanceof HttpErrorResponse) {
-					//localStorage.clear();
-					//this.router.navigate(['/customer/login']);
 				}
 		    }));
 	}

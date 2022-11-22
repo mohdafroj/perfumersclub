@@ -30,18 +30,18 @@ export class FailureComponent implements OnInit {
 	}
 	
 	reOrders(){
-		this.customer.reOrder({orderNumber: this.orderNumber}).subscribe(
-			res => {
+		this.customer.reOrder({orderNumber: this.orderNumber}).subscribe({
+			next: (res) => {
 				if(res.status){
 					this.router.navigate(['/checkout/cart'], { queryParams: {} });
 				}else{
 					this.toastr.error(res.message);
 				}
 			},
-			(err: HttpErrorResponse) => {
+			error: (err) => {
 				this.toastr.error("Server Isse!");
 			}
-		);
+		});
 	}
 
 }

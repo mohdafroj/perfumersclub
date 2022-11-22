@@ -239,7 +239,7 @@ export class CustomerService {
   getImage(){
     let a = 'assets/images/user_profile/user_profile.png';
     if( localStorage.getItem('pcuser') ){
-		let user = localStorage.getItem('pcuser');
+		let user:any = localStorage.getItem('pcuser');
 		user = JSON.parse(user);
 		if ( user['image'] && (user['image'] != '') ) {
 			a = user['image'];
@@ -251,7 +251,7 @@ export class CustomerService {
   setImage(imageLink){
     let doAction = 0;
     if( localStorage.getItem('pcuser') ){
-		let user = localStorage.getItem('pcuser');
+		let user:any = localStorage.getItem('pcuser');
 		user = JSON.parse(user);
 		if (user['image']) {
 			user['image'] = imageLink;
@@ -335,7 +335,7 @@ export class CustomerService {
 
   getPrive(){
     let prive:number = 0;
-	let pcuser = localStorage.getItem('pcuser');
+	let pcuser:any = localStorage.getItem('pcuser');
     if( pcuser ){
       pcuser = JSON.parse(pcuser);	  
       prive = ( pcuser['member'] && pcuser['member']['status'] ) ? pcuser['member']['status'] : 0;
@@ -346,7 +346,7 @@ export class CustomerService {
   
 	getCart(){
 		let cart = [];
-		let pcuser = localStorage.getItem('pcuser');
+		let pcuser:any = localStorage.getItem('pcuser');
 		if( pcuser ){
 			pcuser = JSON.parse(pcuser);
 			cart = pcuser['shopping']['cart'] ? pcuser['shopping']['cart'] : [];
@@ -356,7 +356,7 @@ export class CustomerService {
   
 	setCart(cart){
 		let doAction = -1;
-		let pcuser = localStorage.getItem('pcuser');
+		let pcuser:any = localStorage.getItem('pcuser');
 		if( pcuser ){
 			pcuser = JSON.parse(pcuser);
 			pcuser['shopping']['cart'] = cart;
@@ -425,7 +425,7 @@ export class CustomerService {
 		//console.log(product);
 		product.cart_quantity = 1;
 		let doAction = -1;
-		let pcuser = localStorage.getItem('pcuser');
+		let pcuser:any = localStorage.getItem('pcuser');
 		if( pcuser ){
 			pcuser = JSON.parse(pcuser);
 			pcuser['shopping'] = pcuser['shopping'] ? pcuser['shopping'] : {};
@@ -467,7 +467,7 @@ export class CustomerService {
 	
 	updateQuantityInCart (product) { // object type {shopping: 'cart', quantity: 12, index: 1}
 		let doAction = 0;
-		let pcuser = localStorage.getItem('pcuser');
+		let pcuser:any = localStorage.getItem('pcuser');
 		if( pcuser ){
 			pcuser = JSON.parse(pcuser);
 			pcuser['shopping'] = pcuser['shopping'] ? pcuser['shopping'] : {};
@@ -494,7 +494,7 @@ export class CustomerService {
 	
 	removeFromCart (product) {
 		let doAction = 0;
-		let pcuser = localStorage.getItem('pcuser');
+		let pcuser:any = localStorage.getItem('pcuser');
 		if( pcuser ){
 			pcuser = JSON.parse(pcuser);
 			pcuser['shopping'] = pcuser['shopping'] ? pcuser['shopping'] : {};

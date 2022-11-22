@@ -41,10 +41,10 @@ export class DashboardComponent implements OnInit {
 		private route: ActivatedRoute,
 		private product: ProductsService
 	) {
-		this.sanitizer = sanitize;
 	}
 
 	ngOnInit() {
+		this.sanitizer = this.sanitize;
 		let packPrices = this.config.packPrices;
 		this.pack1Price = packPrices[0];
 		this.pack2Price = packPrices[1];
@@ -65,8 +65,8 @@ export class DashboardComponent implements OnInit {
 		this.resultStatus   = 0;
 		let prms = new HttpParams();
 		prms = prms.append('page', 'launchoffer');
-		this.product.getLaunchOffer(prms).subscribe(
-            res => {
+		this.product.getLaunchOffer(prms).subscribe({
+            next: (res) => {
                 if(res.status){
 					this.pack1OriginalPrice = res.data['pack1']['cross'];
 					this.pack2OriginalPrice = res.data['pack2']['cross'];
@@ -82,17 +82,18 @@ export class DashboardComponent implements OnInit {
 					//this.startOfferTimer();
 					this.config.setMeta({title: res.data['meta']['title'], keywords: res.data['meta']['keywords'], description: res.data['meta']['description']});
 				}
-				this.resultStatus = 1;
             },
-            (err: HttpErrorResponse) => {
+            error: (err) => {
                 if(err.error instanceof Error){
 					//this.resultMsg = err.error.message;
                 }else{
 					//this.resultMsg = JSON.stringify(err.error);
                 }
+            },
+			complete: () => {
 				this.resultStatus = 1;
-            }
-        );
+			}
+        });
     }
 	
 	getOffer (productType) {

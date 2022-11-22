@@ -13,7 +13,7 @@ import { CustomerService } from './../../_services/pb/customer.service';
   encapsulation: ViewEncapsulation.None
 })
 export class FooterComponent implements OnInit, DoCheck {
-	rForm:FormGroup;
+	rForm;
 	msg:string			= '';
 	showDevice:boolean 	= false;
 	infoActive:string   = '';
@@ -44,7 +44,7 @@ export class FooterComponent implements OnInit, DoCheck {
 		});
 		
 		//if(this.window.nativeWindow.innerWidth <= 767){
-		//this.showDevice = ($(window).width() <= 767) ? true:false;
+		//this.showDevice = (window.width <= 767) ? true:false;
 		var d = new Date();
 		this.currentYear = d.getFullYear();
 		let infoData = this.pages.getCompanyData();
@@ -76,8 +76,10 @@ export class FooterComponent implements OnInit, DoCheck {
 		);
 	}
 	ngDoCheck(){
-		let newUsername = this.rForm.controls.email.value;
-		this.rForm.controls.email.setValue(newUsername.toLowerCase(), {});
+		let newUsername = this.rForm.controls['email'].value;
+		this.rForm.controls['email'].setValue(newUsername.toLowerCase(), {});
+		let infoData = this.pages.getCompanyData();
+		this.company = ( (infoData != undefined) && (infoData['company'] != undefined) ) ? infoData['company'] : this.company;
 	}
 	
 	footerToggle(num:number){

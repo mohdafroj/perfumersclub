@@ -19,12 +19,12 @@
 				</div>				
 				<div class="review_content"><!-- start of review_content -->
 					<div class="d-flex flex-wrap align-items-center justify-content-between profile_name">
-						<a routerLink="/{{item.urlKey}}" target="_blank">{{item.title}}</a>
+						<a routerLink="['/', item['urlKey']]" target="_blank">{{item.title}}</a>
 						<p>Posted on {{item.reviews.created}}</p>
 					</div>					
 					<div>
 						<p class="text-left m-0">
-							<span class="text-muted">{{item.reviews.finalRating | number: '1.1-1'}}</span> &nbsp;
+							<span class="text-muted">{{item.reviews.finalRating }}</span> &nbsp;
 							<span class="fa fa-star star-active" *ngFor="let star of getFinalRating(item.reviews.finalRating)"></span> 
 							<span class="fa fa-star star-inactive" *ngFor="let star of getRemainingRating(item.reviews.finalRating)"></span>
 						</p>

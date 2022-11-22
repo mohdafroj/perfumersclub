@@ -1,7 +1,10 @@
 <div class="content mt-n3">
 	<section class="shopNowBanner">
 		<figure>
-			<img src="assets/images/shop-banner.png" alt="Carry your scent, whetever you go" class="img-fluid w-100 d-block" />
+			<span class="imgGradientEff">
+				<img src="assets/images/imgGradient.png" class="img-fluid d-block w-100" alt="Bombshell">
+			</span>
+			<img src="assets/images/shop-banner.webp" alt="Carry your scent, whetever you go" class="img-fluid w-100 d-block" />
 			<figcaption class="figure-caption">
 				Lighter <span>Carry your scent, whetever you go</span>
 			</figcaption>
@@ -9,63 +12,6 @@
 	</section>
 	<section class="section_box">
 		<div class="container">
-			<!--div class="row">
-				<h3 class="col-12 categoryTitle">
-					<span>Product Categories</span>
-				</h3>
-				<div class="col-12 categorySec">
-					<swiper [config]="swiperConfig" class="swiper-container shopSwiper">
-						<ng-template swiperSlide>
-							<div [ngClass]="{'active':(productType == config.categories.category1.key)}" (click)="categoryChange(config.categories.category1.key);">
-								<figure>
-									<img src="assets/images/products/shopnow/Lightr+3Perfumes.jpg" alt="bombshell" class="img-fluid mx-auto d-block" />
-								</figure>
-								<h5 class="card-title">{{config.categories.category1.title}}</h5>
-							</div>
-						</ng-template>
-						<ng-template swiperSlide>
-							<div [ngClass]="{'active':(productType == config.categories.category2.key)}" (click)="categoryChange(config.categories.category2.key);">
-								<figure>
-									<img src="assets/images/products/shopnow/Setof3X8mlPerfumes.jpg" alt="bombshell" class="img-fluid mx-auto d-block" />
-								</figure>
-								<h5 class="card-title">{{config.categories.category2.title}}</h5>
-							</div>
-						</ng-template>
-						<ng-template swiperSlide>
-							<div [ngClass]="{'active':(productType == config.categories.category3.key)}" (click)="categoryChange(config.categories.category3.key);">
-								<figure>
-									<img src="assets/images/products/shopnow/Lightr7X8mlPerfumes.jpg" alt="bombshell" class="img-fluid mx-auto d-block" />
-								</figure>
-								<h5 class="card-title">{{config.categories.category3.title}}</h5>
-							</div>
-						</ng-template>
-						<ng-template swiperSlide>
-							<div [ngClass]="{'active':(productType == config.categories.category4.key)}" (click)="categoryChange(config.categories.category4.key);">
-								<figure>
-									<img src="assets/images/products/shopnow/Lightr+7Perfumes.jpg" alt="bombshell" class="img-fluid mx-auto d-block" />
-								</figure>
-								<h5 class="card-title">{{config.categories.category4.title}}</h5>
-							</div>
-						</ng-template>
-						<ng-template swiperSlide>
-							<div [ngClass]="{'active':(productType == config.categories.category5.key)}" (click)="categoryChange(config.categories.category5.key);">
-								<figure>
-									<img src="assets/images/products/shopnow/Setof3X50mlPerfumes.jpg" alt="bombshell" class="img-fluid mx-auto d-block" />
-								</figure>
-								<h5 class="card-title">{{config.categories.category5.title}}</h5>
-							</div>
-						</ng-template>
-						<ng-template swiperSlide>
-							<div [ngClass]="{'active':(productType == config.categories.category6.key)}" (click)="categoryChange(config.categories.category6.key);">
-								<figure>
-									<img src="assets/images/products/shopnow/FullSize50mlPerfume.jpg" alt="bombshell" class="img-fluid mx-auto d-block" />
-								</figure>
-								<h5 class="card-title">{{config.categories.category6.title}}</h5>
-							</div>
-						</ng-template>	
-					</swiper>
-				</div>
-			</div-->
 			<div class="row">
 				<div class="col-12">
 					<ul class="list-unstyled filterLinks">
@@ -77,25 +23,25 @@
 			</div>
 			<div class="row productItems" *ngIf="(resultStatus == 1); else startLoader" >
 				<div *ngFor="let item of filterProducts;" class="col-md-6 col-12">
-					<a [routerLink]="['/', item.urlKey]">
+					<a [routerLink]="['/', item['urlKey']]">
 						<div class="card">
 							<figure>
 								<img [src]="item['images'][0]['large']" [alt]="item['images'][0]['alt']" class="img-fluid mx-auto d-block" />
-								<figcaption class="figure-caption" *ngIf="item.rating" >
-									<i class="fas fa-star"></i>{{item.rating | number: '1.1-1'}}
+								<figcaption class="figure-caption" *ngIf="item['rating']" >
+									<i class="fas fa-star"></i>{{item['rating'] | number: '1.1-1'}}
 								</figcaption>
-								<div *ngIf="item.isStock == 'out_of_stock'" class="out_of_stock"><span>Out Of Stock</span></div>
+								<div *ngIf="item['isStock'] == 'out_of_stock'" class="out_of_stock"><span>Out Of Stock</span></div>
 							</figure>
 							<div class="card-body">
 								<h5 class="card-title">
-									{{item.name}} <span *ngIf="item.categories[0]">{{item.categories[0]['name']}}</span>
+									{{item['name']}} <span *ngIf="item['categories'][0]">{{item['categories'][0]['name']}}</span>
 								</h5>
-								<h4 *ngIf="item.discount.original > 0; else elsePrice" class="card-text">
-									₹{{item.price | number: '2.2-2'}} <del>₹{{item.discount.original | number: '2.2-2'}}</del>
+								<h4 *ngIf="item['discount']['original'] > 0; else elsePrice" class="card-text">
+									₹{{item['price'] | number: '2.2-2'}} <del>₹{{item['discount']['original'] | number: '2.2-2'}}</del>
 								</h4>
 								<ng-template #elsePrice>
 									<h4 class="card-text">
-										₹{{item.price | number: '2.2-2'}}
+										₹{{item['price'] | number: '2.2-2'}}
 									</h4>
 								</ng-template>
 								<!--dfn>

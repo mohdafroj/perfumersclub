@@ -36,7 +36,7 @@
 			<div class="container">
 				<div class="row">
 					<h4>{{name}}</h4>
-					<a (click)="customerLogout();" [ngStyle]="{'cursor': 'pointer', 'text-decoration': 'underline'}">Logout</a>
+					<a (click)="customerLogout();" [style]="{'cursor': 'pointer', 'text-decoration': 'underline'}">Logout</a>
 				</div>
 			</div>
 		</div><!-- end of user_profile_lower part -->
@@ -44,8 +44,8 @@
 	<section class="container-fluid position-relative">
 		<div class="container">
 			<div class="row">
-				<span (click)="menuOpen = !menuOpen;" class="userMenu d-md-none d-block" [ngClass]="{'open': menuOpen}">User Menu <span><i class="fas fa-chevron-left"></i></span></span>
-				<div (click)="menuOpen = false;" class="col-lg-2 col-md-3 col-12 sidebar_menu_main" [ngClass]="{'toggle_open': menuOpen}">
+				<span (click)="menuOpen = !menuOpen;" class="userMenu d-md-none d-block" [class]="{'open': menuOpen}">User Menu <span><i class="fas fa-chevron-left"></i></span></span>
+				<div (click)="menuOpen = false;" class="col-lg-2 col-md-3 col-12 sidebar_menu_main" [class]="{'toggle_open': menuOpen}">
                     	
 					<div class="sidebar_menu"><!-- start of sidebar_menu -->
 						<a routerLink="/customer" routerLinkActive="active" class="sidebar_link">Overview</a>

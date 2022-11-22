@@ -6,6 +6,7 @@ import { CustomerService } from './../../_services/pb/customer.service';
 import { ToastrService } from 'ngx-toastr';
 import { DataService } from './../../_services/data.service';
 import { Myconfig } from './../../_services/pb/myconfig';
+import { PagesService } from './../../_services/pb/pages.service';
 
 @Component({
   selector: 'header',
@@ -30,6 +31,8 @@ export class HeaderComponent implements OnInit {
 	shoppingPack = [];
 	topScrollClass:string = 'affix-top';
 	shonowSticky = 0;
+	stripBanner = '';
+	navbarPosition = 'relative';
 	sanitizer:any;	
 	constructor(
 		private router: Router,
@@ -39,10 +42,10 @@ export class HeaderComponent implements OnInit {
 		private customer: CustomerService,
 		private elem: ElementRef,
 		private dataService: DataService,
+		private pages: PagesService,
 		private sanitize: DomSanitizer) {
 		this.sanitizer = sanitize;
 	}
-	
 	ngOnInit(){
 		this.windowWidth = window.innerWidth;
 		this.windowHeight = window.innerHeight;
@@ -55,12 +58,25 @@ export class HeaderComponent implements OnInit {
 			}
 		});
 		this.getMiniCart();
+		let infoData = this.pages.getCompanyData();
+		this.stripBanner = ( (infoData != undefined) && (infoData['company'] != undefined) ) ? infoData['company']['strip'] : '';
+		if ( this.stripBanner != '' ) {
+			this.navbarPosition = ( this.windowWidth < 768 ) ? 'fixed' : 'relative';
+		} else {
+			this.navbarPosition = 'fixed';
+		}
     }
+	
+	menuToggle1 ():any {
+		this.actveMenu = ! this.actveMenu;
+	}
 	
 	menuToggle () {
 		this.elem.nativeElement.querySelector('#menuToggle').click();
 	}
-	
+	ngDoCheck () {
+		this.getMiniCart();
+	}
 	getMiniCart () {
 		this.cartTotal = 0;
 		this.userId = this.customer.getId();
@@ -82,11 +98,9 @@ export class HeaderComponent implements OnInit {
 		for ( let i = 0; i < this.shoppingPack.length; i++ ) {
 			this.cartTotal += this.shoppingPack[i]['cart_quantity'] * this.shoppingPack[i]['price'];
 		}
-		setTimeout( () => { this.getMiniCart(); }, 2000);
-		//console.log(this.shoppingCart);
 	}
 
-	onLogged (userId: number) {
+	onLogged (userId: any) {
 		this.userId = userId;
 	}
 	
@@ -99,7 +113,12 @@ export class HeaderComponent implements OnInit {
 	}
 	
 	@HostListener('window:scroll') onResize() {
-		const componentPosition = this.elem.nativeElement.offsetTop
+		//const componentPosition = this.elem.nativeElement.offsetTop
+		if ( this.stripBanner != '' ) {
+			this.navbarPosition = ( this.windowWidth < 768 ) ? 'fixed' : 'relative';
+		} else {
+			this.navbarPosition = 'fixed';
+		}
 		const scrollPosition = window.pageYOffset
 		if( scrollPosition > 50 ){
 			this.shonowSticky = 1;

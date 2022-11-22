@@ -11,7 +11,7 @@ import { CustomerService } from '../../../_services/pb/customer.service';
   encapsulation: ViewEncapsulation.None
 })
 export class DeleteDialogComponent implements OnInit {
-	rForm:FormGroup;
+	rForm:any;
 	item:any = {};
 	userId:number = 0;
 	resObject = {};
@@ -33,8 +33,8 @@ export class DeleteDialogComponent implements OnInit {
 		this.resObject['textClass'] = 'text-warning';
 		if ( this.serverRequest ) {
 			this.serverRequest = false;
-			this.customer.deleteAddress(this.rForm.value).subscribe(
-				res => {
+			this.customer.deleteAddress(this.rForm.value).subscribe({
+				next: (res) => {
 					this.serverRequest = true;
 					if( res.status ) {
 						this.dialogRef.close(this.rForm.value.id);
@@ -44,7 +44,7 @@ export class DeleteDialogComponent implements OnInit {
 						this.resObject['textClass'] = 'text-danger';
 					}
 				},
-				(err: HttpErrorResponse) => {
+				error: (err) => {
 					this.resObject['textClass'] = 'text-danger';
 					if(err.error instanceof Error){
 						this.resObject['message'] = 'App error, contact to customer care';
@@ -52,7 +52,7 @@ export class DeleteDialogComponent implements OnInit {
 						this.resObject['message'] = 'Server error, try later';
 					}
 				}
-			);
+			});
 		}	
     }
 

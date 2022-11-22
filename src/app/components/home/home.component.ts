@@ -1,15 +1,18 @@
-import { Component, OnInit, HostListener, ElementRef, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser, isPlatformServer } from '@angular/common';
 import { DomSanitizer } 		from '@angular/platform-browser';
-import { HttpErrorResponse, HttpParams } from '@angular/common/http';
-import { Router, ActivatedRoute, Params } from '@angular/router';
+import { HttpParams } from '@angular/common/http';
+import { Router } from '@angular/router';
+import * as jQuery from 'jquery';
 import { Myconfig } 	from './../../_services/pb/myconfig';
 import { PagesService } from './../../_services/pb/pages.service';
 import { ProductsService } from './../../_services/pb/products.service';
 import { StoreService } from './../../_services/pb/store.service';
-//import $ from 'jquery';
 import SwiperCore , { Pagination, SwiperOptions, FreeMode } from 'swiper';
 //import 'swiper/css/bundle';
-import 'swiper/css';
+//import 'swiper/css';
+//const baseUrl = 'http://localhost/pb/subscription-api-v1.0/products/get-products/home';
+
 SwiperCore.use([Pagination,FreeMode]);
 @Component({
   selector: '.home',
@@ -69,26 +72,25 @@ export class HomeComponent implements OnInit {
   	};
 	
 	constructor( 
-		private config: Myconfig, 
-		private el:ElementRef, 
+		@Inject(PLATFORM_ID) private _platformId: Object,
+		protected config: Myconfig, 
 		private sanitize: DomSanitizer,
 		private router: Router,
-		private route: ActivatedRoute,
 		private pages: PagesService,
 		private product: ProductsService,
 		private store: StoreService
 	) {
-  		//console.log("home constructor called");
-		this.sanitizer = sanitize;
+		//(typeof jQuery != 'undefined') ? console.log(jQuery.fn.jquery) : console.error("No jquery");
     }
     
 	ngOnInit() {
+		this.sanitizer = this.sanitize;
 		this.config.scrollToTop();
 		this.getProductList();
 		let infoData = this.pages.getCompanyData();
 		this.youtubelink = (infoData && infoData['company'] && infoData['company']['homeyoutube']) ? infoData['company']['homeyoutube'] : '#';
     }
-	
+		
 	slickInit(e) {
 		//console.log('slick initialized');
 	}
@@ -99,7 +101,7 @@ export class HomeComponent implements OnInit {
 	
 	getProductList () {
 		this.resultStatus   = 0;
-		let offerCoupon = this.config.getOfferCoupon();
+		let offerCoupon = this.config.getOfferCoupon() ;
 		let inputData = this.store.getCartInfo();
 		if ( offerCoupon != '' ) {
 			inputData['couponCode'] = offerCoupon;
@@ -107,8 +109,8 @@ export class HomeComponent implements OnInit {
 		}
 		let prms = new HttpParams();
 		prms = prms.append('offerCoupon', offerCoupon);
-		this.product.getProducts(prms, 'home').subscribe(
-            res => {
+		this.product.getProducts(prms, 'home').subscribe({
+            next: (res) => {
                 if(res.status){
 					this.productsList1 = res.data['productsList1'];
 					this.productsList2 = res.data['productsList2'];
@@ -124,51 +126,44 @@ export class HomeComponent implements OnInit {
 					this.filterProduct4 = this.productsList4;
 					this.filterProduct5 = this.productsList5;
 					this.filterProduct6 = this.productsList6;
-					/*this.genderFilter(1, this.gender1);
-					this.genderFilter(2, this.gender2);
-					this.genderFilter(3, this.gender3);
-					this.genderFilter(4, this.gender4);
-					this.genderFilter(5, this.gender5);
-					this.genderFilter(6, this.gender6);
-					this.genderFilter(7, this.gender7);*/
 				}
 				this.resultStatus = 1;
             },
-            (err: HttpErrorResponse) => {
-				this.resultStatus = 1;
-            }
-        );
+            error: (err) => {},
+			complete: () => { this.resultStatus = 1; }
+		});
+		return true;
     }
 
 	genderFilter (sliderNumber, value) {
 		switch(sliderNumber) {
 			case 1: 
 				this.gender1 = value;
-				this.filterProduct1 =  this.productsList1.filter( (item) => { return item.gender == this.gender1; }, this.gender1);
+				this.filterProduct1 =  this.productsList1.filter( (item) => { return item['gender'] == this.gender1; }, this.gender1);
 				break;
 			case 2:
 				this.gender2 = value;
-				this.filterProduct2 =  this.productsList2.filter( (item) => { return item.gender == this.gender2; }, this.gender2);
+				this.filterProduct2 =  this.productsList2.filter( (item) => { return item['gender'] == this.gender2; }, this.gender2);
 				break;
 			case 3:
 				this.gender3 = value;
-				this.filterProduct3 =  this.productsList3.filter( (item) => { return item.gender == this.gender3; }, this.gender3);
+				this.filterProduct3 =  this.productsList3.filter( (item) => { return item['gender'] == this.gender3; }, this.gender3);
 				break;
 			case 4:
 				this.gender4 = value;
-				this.filterProduct4 =  this.productsList4.filter( (item) => { return item.gender == this.gender4; }, this.gender4);
+				this.filterProduct4 =  this.productsList4.filter( (item) => { return item['gender'] == this.gender4; }, this.gender4);
 				break;
 			case 5:
 				this.gender5 = value;
-				this.filterProduct5 =  this.productsList5.filter( (item) => { return item.gender == this.gender5; }, this.gender5);
+				this.filterProduct5 =  this.productsList5.filter( (item) => { return item['gender'] == this.gender5; }, this.gender5);
 				break;
 			case 6:
 				this.gender6 = value;
-				this.filterProduct6 =  this.productsList6.filter( (item) => { return item.gender == this.gender6; }, this.gender6);
+				this.filterProduct6 =  this.productsList6.filter( (item) => { return item['gender'] == this.gender6; }, this.gender6);
 				break;
 			case 7:
 				this.gender7 = value;
-				this.filterProduct7 =  this.productsList7.filter( (item) => { return item.gender == this.gender7; }, this.gender7);
+				this.filterProduct7 =  this.productsList7.filter( (item) => { return item['gender'] == this.gender7; }, this.gender7);
 				break;
 			default:
 		}

@@ -17,7 +17,7 @@ export class FaqComponent implements OnInit {
 	}
 
 	ngOnInit() {
-		this.config.scrollToTop();
+		this.config.scrollToBottom(10,10);
 	}
   
 	setAction(index:number){

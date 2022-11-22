@@ -15,7 +15,7 @@ import { CustomerService } from '../../_services/pb/customer.service';
 	]
 })
 export class NewsletterComponent implements OnInit {
-  newsletterForm:FormGroup;
+  newsletterForm;
   response:any;
   resObject = {};
   constructor(private router: Router, private route: ActivatedRoute, private config:Myconfig, private customer: CustomerService) {

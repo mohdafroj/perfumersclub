@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { retry, catchError } from 'rxjs/operators';
 import { Myconfig } from './../../_services/pb/myconfig';
 
 interface ItemsResponse {
@@ -40,8 +42,8 @@ export class ProductsService {
         return this.http.get<ItemsResponse>(this.pbApi+'products/get-sku-products', {params:prms});
     }
 
-    getProducts(prms, segment=''){
-        return this.http.get<ProductResponse>(this.pbApi+'products/get-products/'+segment, {params:prms});
+    getProducts(prms, segment=''): Observable<ProductResponse>{
+        return this.http.get<ProductResponse>(this.pbApi+'products/get-products/'+segment, {params:prms}).pipe(retry(1), catchError(this.errorHandl));
     }
 
     getScentMatch(prms){
@@ -114,10 +116,24 @@ export class ProductsService {
 		return this.http.post<ItemsResponse>(this.pbApi+'products/notify-me', JSON.stringify(formData), {});
 	}
 	
+  errorHandl(error) {
+    let errorMessage = '';
+    if (error.error instanceof ErrorEvent) {
+      // Get client-side error
+      errorMessage = error.error.message;
+    } else {
+      // Get server-side error
+      errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
+    }
+    console.log(errorMessage);
+    return throwError(() => {
+      return errorMessage;
+    });
+  }
 	getGender(){
 		let gender = '';
 		if( localStorage.getItem('pcgender') ){
-		  gender = localStorage.getItem('pcgender');
+		  gender = localStorage.getItem('pcgender') || '';
 		}
 		return gender;
     }

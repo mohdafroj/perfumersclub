@@ -1,4 +1,7 @@
 	<div class="content">
+		<section *ngIf="pageType == 'static'" class="section_box">
+			<static-product></static-product>
+		</section>
         <section class="container-fluid section_box product_detail_mobile">
         	<div [ngSwitch]="pageType" class="container">
 				<div *ngSwitchCase="'loading'" class="row product_detail">
@@ -247,8 +250,7 @@
 				<div *ngSwitchCase="'static'" class="row">
                     <div *ngIf="saleBanner" class="col-md-12 col-sm-12 col-xs-12">
 						<img src="assets/images/banners/current/perfume.jpg" class="img-responsive center-block" />
-					</div>
-					<!--static-product></static-product-->
+					</div>					
 					<div class="col-sm-12 col-xs-12 no-padding" [innerHTML]="sanitizer.bypassSecurityTrustHtml(result.content)"></div>
 				</div>
 				
@@ -269,6 +271,7 @@
 					<div class="row">
 						<div *ngFor="let item of plusContent" class="col-md-6 col-12 itemCatDes">
 							<figure>
+								<span class="imgGradientEff"><img src="assets/images/imgGradient.png" class="img-fluid d-block w-100" alt="Bombshell"></span>
 								<img src="{{item.image}}" class="img-fluid d-block w-100" alt="Bombshell">
 								<figcaption class="figure-caption">
 									<span>{{item.caption}}</span> {{item.title}}

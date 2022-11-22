@@ -14,7 +14,7 @@ import { CustomerService } from '../../../_services/pb/customer.service';
   encapsulation: ViewEncapsulation.None
 })
 export class ListComponent implements OnInit {
-	ordersList = [];
+	ordersList:any = [];
 	orderId = '';
 	userId = 0;
 	confimMsg ='';
@@ -40,18 +40,20 @@ export class ListComponent implements OnInit {
 		prms = prms.set('orderBy', `${orderBy}`);
 		if ( this.serverRequest ) {
 			this.serverRequest = false;
-			this.customer.getOrders(prms).subscribe(
-				res => {
+			this.customer.getOrders(prms).subscribe({
+				next: (res) => {
 					this.ordersList = res.data;
 					this.loader = 0;
 					this.serverRequest = true;
 				},
-				(err: HttpErrorResponse) => {
+				error: (err) => {
 					console.log("Server Isse!");
+				},
+				complete: () => {
 					this.loader = 0;
 					this.serverRequest = true;
 				}
-			);
+			});
 		}
 	}
 	
@@ -61,8 +63,8 @@ export class ListComponent implements OnInit {
 		};
 		if ( this.serverRequest ) {
 			this.serverRequest = false;		
-			this.customer.getOrderDetails(formData).subscribe(
-				res => {
+			this.customer.getOrderDetails(formData).subscribe({
+				next: (res) => {
 					if(res.status){
 						
 					}else{
@@ -70,11 +72,13 @@ export class ListComponent implements OnInit {
 					}
 					this.serverRequest = true;
 				},
-				(err: HttpErrorResponse) => {
+				error: (err) => {
 					console.log("Server Isse!");
+				},
+				complete: () => {
 					this.serverRequest = true;
 				}
-			);
+			});
 		}	
 	}
   
@@ -84,8 +88,8 @@ export class ListComponent implements OnInit {
 		};
 		if ( this.serverRequest ) {
 			this.serverRequest = false;
-			this.customer.reOrder(formData).subscribe(
-				res => {
+			this.customer.reOrder(formData).subscribe({
+				next: (res) => {
 					if(res.status){
 						this.router.navigate(['/checkout/cart'], { queryParams: {} });
 					}else{
@@ -93,11 +97,12 @@ export class ListComponent implements OnInit {
 					}
 					this.serverRequest = true;
 				},
-				(err: HttpErrorResponse) => {
-					console.log("Server Isse!");
+				error: (err) => {
+				},
+				complete: () => {
 					this.serverRequest = true;
 				}
-			);
+			});
 		}
 	}
   
@@ -114,16 +119,16 @@ export class ListComponent implements OnInit {
 		};
 		if ( this.serverRequest ) {
 			this.serverRequest = false;
-			this.customer.cancelOrder(formData).subscribe(
-				res => {
+			this.customer.cancelOrder(formData).subscribe({
+				next: (res) => {
 					this.confimMsg = res.message;
 					this.serverRequest = true;
 				},
-				(err: HttpErrorResponse) => {
+				error: (err) => {
 					console.log("Server Isse!");
 					this.serverRequest = true;
 				}
-			);
+			});
 		}
 	}
   

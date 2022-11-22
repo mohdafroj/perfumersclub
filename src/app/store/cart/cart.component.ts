@@ -18,12 +18,12 @@ import { TrackingService }	from './../../_services/tracking.service';
 	]
 })
 export class CartComponent implements OnInit, DoCheck {
-	@ViewChild('hideDeleteModal', {static: false}) hideDeleteModal: ElementRef;
+	@ViewChild('hideDeleteModal', {static: false}) hideDeleteModal: any;
 	shoppingCart = []; //GETFOR399
 	shoppingPack = [];
 	cartCurrency;
 	cartTotal = 0.00;
-	couponForm:FormGroup;
+	couponForm:any;
 	customerInfo;	  
 	accMsg	= '';
 	userId	= 0;	
@@ -39,9 +39,9 @@ export class CartComponent implements OnInit, DoCheck {
 	loaderStatus = 0;
 	//Start Login/Register detail
 	serverRequest = false;
-	userTypeForm:FormGroup;
-	loginForm:FormGroup;
-	registerForm:FormGroup;
+	userTypeForm:any;
+	loginForm:any;
+	registerForm:any;
 	loginStatusType = 'newuser';
 	tokenForAccount = '';
 	myFormData: any;
@@ -53,14 +53,14 @@ export class CartComponent implements OnInit, DoCheck {
 	oldMobile;
 	oldOtp;
 	//customer address
-	addressForm:FormGroup; 
+	addressForm:any; 
 	addresses = [];
 	selectedAddress = {};
 	initAddress	= {};
 	addressId	= -1;
 	addressResponse	= {};
 	pincodeStatus = 0;
-	methodForm:FormGroup;
+	methodForm:any;
 	paymentMethodData = [];
 	finalStatus:boolean	= false;
 	finalMessage = '';
@@ -106,6 +106,7 @@ export class CartComponent implements OnInit, DoCheck {
 			mobile:customer.getMobile(),
 			set_default:0
 		};
+		this.hideDeleteModal = ElementRef;
 	}
 
 	ngOnInit() {
@@ -151,6 +152,7 @@ export class CartComponent implements OnInit, DoCheck {
 				return {'username': true};
 			}
 		}
+		return {'username': false };
 	}
 
 	customerLogin(formData){
@@ -190,9 +192,8 @@ export class CartComponent implements OnInit, DoCheck {
 				let carItemQuantities = myCart['shopping']['cart'].map( (item) => { return item.cart_quantity; });
 				formData.productId = carItemIds.join(',');
 				formData.quantity = carItemQuantities.join(',');				
-				this.customer.signIn(formData).subscribe(
-					(res)=> {
-						this.serverRequest = false;
+				this.customer.signIn(formData).subscribe({
+					next: (res)=> {
 						if(res.status){
 							if(this.isStep == 2){
 								this.customer.setAccount(res.data);
@@ -214,16 +215,18 @@ export class CartComponent implements OnInit, DoCheck {
 							}
 						}
 					},
-					(err: HttpErrorResponse) => {
-						this.serverRequest = false;
+					error: (err: HttpErrorResponse) => {
 						this.resObj.otpClass = 'text-danger resend_otp';
 						if(err.error instanceof Error){
 							this.resObj.message = 'Client error: '+err.error.message;
 						}else{
 							this.resObj.message = 'Server error: There are some server issue.';
 						}
+					},
+					complete: () => {
+						this.serverRequest = false;
 					}
-				);
+				});
 			} else {
 				this.toastr.warning("Please wait ...");
 			}
@@ -244,8 +247,8 @@ export class CartComponent implements OnInit, DoCheck {
 		this.myFormData.isStep = 1;
 		this.myFormData.otp = '';
 		this.loginForm.controls.otp.setValue('', {});
-		this.customer.signIn(this.myFormData).subscribe(
-			(res)=> {
+		this.customer.signIn(this.myFormData).subscribe({
+			next: (res)=> {
 				if(res.status){
 					this.resObj.otpMessage = '';
 					this.resObj.textClass = '';
@@ -255,7 +258,7 @@ export class CartComponent implements OnInit, DoCheck {
 					this.resObj.message = res.message;
 				}
 			},
-			(err: HttpErrorResponse) => {
+			error: (err: HttpErrorResponse) => {
 				this.resObj.otpClass = 'text-danger resend_otp';
 				if(err.error instanceof Error){
 					this.resObj.message = 'Client error: '+err.error.message;
@@ -263,7 +266,7 @@ export class CartComponent implements OnInit, DoCheck {
 					this.resObj.message = 'Server error: '+JSON.stringify(err.error);
 				}
 			}
-		);
+		});
 	}
 
 	customerRegister( formData ) { 
@@ -322,9 +325,8 @@ export class CartComponent implements OnInit, DoCheck {
 				let carItemQuantities = myCart['shopping']['cart'].map( (item) => { return item.cart_quantity; });
 				formData.productId = carItemIds.join(',');
 				formData.quantity = carItemQuantities.join(',');				
-				this.customer.signUp(formData).subscribe(
-					res => {
-						this.serverRequest = false;
+				this.customer.signUp(formData).subscribe({
+					next: (res) => {
 						if ( res.status ) {
 							if ( this.isStep == 2 ) {
 								this.customer.setAccount(res.data);
@@ -346,16 +348,18 @@ export class CartComponent implements OnInit, DoCheck {
 							}
 						}
 					},
-					(err: HttpErrorResponse) => {
-						this.serverRequest = false;
+					error: (err: HttpErrorResponse) => {
 						this.resObj['otpClass'] = 'text-danger';
 						if(err.error instanceof Error){
 							this.resObj['message'] = 'Client error: '+err.error.message;
 						}else{
 							this.resObj['message'] = 'Server error: There are some server issue!';
 						}
+					},
+					complete: () => {
+						this.serverRequest = false;
 					}
-				);
+				});
 			}			
 		}
 		return true;
@@ -369,9 +373,8 @@ export class CartComponent implements OnInit, DoCheck {
 		this.registerForm.controls.otp.setValue('', {});
 		if( this.serverRequest == false ){
 			this.serverRequest = true;
-			this.customer.signUp(this.myFormData).subscribe(
-				(res)=> {
-					this.serverRequest = false;
+			this.customer.signUp(this.myFormData).subscribe({
+				next: (res)=> {
 					if(res.status){
 						this.resObj['otpMessage'] = '';
 						this.resObj['textClass'] = '';
@@ -382,16 +385,18 @@ export class CartComponent implements OnInit, DoCheck {
 						this.resObj['message'] = res.message;
 					}
 				},
-				(err: HttpErrorResponse) => {
-					this.serverRequest = false;
+				error: (err: HttpErrorResponse) => {
 					this.resObj['otpClass'] = 'text-danger';
 					if(err.error instanceof Error){
 						this.resObj['message'] = 'Client error: '+err.error.message;
 					}else{
 						this.resObj['message'] = 'Server error: There are some server issue!';
 					}
+				},
+				complete: () => {
+					this.serverRequest = false;
 				}
-			);
+			});
 		}
 	}
 
@@ -480,8 +485,8 @@ export class CartComponent implements OnInit, DoCheck {
 	}
 	
 	getAddresses() {
-		this.customer.getAddresses().subscribe(
-			res => {
+		this.customer.getAddresses().subscribe({
+			next: (res) => {
 				this.addresses = res.data; //this.addresses['address'] = [];
 				if( this.addresses['address'] && this.addresses['address'].length > 0 ){
 					for( let item of this.addresses['address'] ){
@@ -504,10 +509,8 @@ export class CartComponent implements OnInit, DoCheck {
 					this.initAddressForm(this.initAddress);
 				}
 			},
-			(err: HttpErrorResponse) => {
-				console.log("Server Isse!");
-			}
-		);
+			error: (err) => {}
+		});
 	}
 	
 	editAddress(item){
@@ -532,8 +535,8 @@ export class CartComponent implements OnInit, DoCheck {
 	}
 	
 	fetchAddressByPincode(pincode) {
-		this.store.checkPincode(pincode, 1).subscribe(
-			res => {
+		this.store.checkPincode(pincode, 1).subscribe({
+			next: (res) => {
 				if ( res.status ) {
 					if ( res.data.state != '' ) {
 						this.addressForm.patchValue({state:res.data.state});
@@ -543,9 +546,8 @@ export class CartComponent implements OnInit, DoCheck {
 					}
 				}
 			},
-			(err: HttpErrorResponse) => {
-			}
-		);
+			error: (err) => {}
+		});
 	}
 
 	saveAddress(formData){ //console.log(formData, this.serverRequest);
@@ -556,15 +558,14 @@ export class CartComponent implements OnInit, DoCheck {
 		if( (this.serverRequest == false)  ) { //&& ( checkForm == true )
  			this.addressResponse = { message: '<i class="fa fa-spinner fa-spin"></i>', textClass:'text-danger' };
 			this.serverRequest = true;
-			this.store.checkPincode(formData.pincode).subscribe(
-				res => { //console.log(res);
+			this.store.checkPincode(formData.pincode).subscribe({
+				next: (res) => { //console.log(res);
 					this.pincodeStatus = res.status; // 1 both, 2 prepaid, 3 postpaid, 0 not
 					this.deliveryMessage = res.message;
 					if( this.pincodeStatus > 0 ) {
 						formData.setdefault = 1;
-						this.customer.addAddresses(formData).subscribe(
-							res => {
-								this.serverRequest = false;
+						this.customer.addAddresses(formData).subscribe({
+							next: (res) => {
 								if( res.status ){
 									this.addresses = res.data;
 									if( this.addresses['address'].length > 0 ){
@@ -584,7 +585,7 @@ export class CartComponent implements OnInit, DoCheck {
 									this.addressResponse = { message:res.message, textClass:'text-danger' };
 								}
 							},
-							(err: HttpErrorResponse) => {
+							error: (err: HttpErrorResponse) => {
 								var message = '';
 								if(err.error instanceof Error){
 									message = 'Client error: '+err.error.message;
@@ -592,19 +593,21 @@ export class CartComponent implements OnInit, DoCheck {
 									message = 'Server error: '+JSON.stringify(err.error);
 								}
 								this.addressResponse = { message:message, textClass:'text-danger' };
+							},
+							complete: () => {
 								this.serverRequest = false;
 							}
-						);
+						});
 					} else {
 						this.addressResponse = { message:res.message, textClass:'text-danger' };
 						this.serverRequest = false;
 					}
 				},
-				(err: HttpErrorResponse) => {
+				error: (err: HttpErrorResponse) => {
 					this.addressResponse = { message:'Sorry, may be network issue, please refresh page!', textClass:'text-danger' };
 					this.serverRequest = false;
 				}
-			);
+			});
 		} else if ( checkForm == false ) {	
 			this.addressResponse = { message: 'Please enter !', textClass:'text-danger' };
 		} else {
@@ -616,8 +619,8 @@ export class CartComponent implements OnInit, DoCheck {
 		let myCart = this.customer.getFromCart();
 		this.inputData['shopping'] = myCart['shopping'];		
 		this.loaderStatus = 0;
-		this.store.getCart(this.inputData).subscribe(
-			res => {
+		this.store.getCart(this.inputData).subscribe({
+			next: (res) => {
 				if ( res.status ) {
 					if ( res.data['shopping'] ) {
 						this.cartCurrency   = res.data.currency;
@@ -652,7 +655,6 @@ export class CartComponent implements OnInit, DoCheck {
 						this.grandFinalTotal = 0;
 					}
 					this.couponForm.patchValue({inCouponCode:this.inputData.couponCode});
-					///this.inputData.couponCode   = this.couponCode;
 					
 					if( !this.inputData['paymentMethod'] ){
 						this.inputData.paymentMethod = res.data.payment_method;
@@ -669,7 +671,6 @@ export class CartComponent implements OnInit, DoCheck {
 					this.cartCouponList = [];
 					this.shoppingCart = myCart['shopping']['cart'];
 				}
-				this.loaderStatus = 1;
 				this.store.setCartInfo(this.inputData);
 				this.customer.setCart(this.shoppingCart);
 				this.store.setTrackingData(res.data);
@@ -677,15 +678,17 @@ export class CartComponent implements OnInit, DoCheck {
 				//console.log(this.inputData['paymentCode']);
 
 			},
-			(err: HttpErrorResponse) => {
-				this.loaderStatus = 1;
+			error: (err: HttpErrorResponse) => {
 				if(err.error instanceof Error){
 				  console.log('Client Error: '+err.error.message);
 				}else{
 				  console.log(`Server Error: ${err.status}, body was: ${JSON.stringify(err.error)}`);
 				}
+			},
+			complete: () => {
+				this.loaderStatus = 1;
 			}
-		);
+		});
 		
 		return true;
 	}
@@ -752,8 +755,8 @@ export class CartComponent implements OnInit, DoCheck {
 	addBoosterProduct (productId) {
 		if ( this.userId > 0 ) {
 			let formData = {itemId: productId, quantity: 1};
-			this.store.addToCart(formData).subscribe(
-				res => {
+			this.store.addToCart(formData).subscribe({
+				next: (res) => {
 					if ( res.data.cart ) { this.customer.setCart(res.data.cart); }
 					if( res.status ){								
 						this.toastr.success(res.message);
@@ -762,10 +765,10 @@ export class CartComponent implements OnInit, DoCheck {
 					}
 					this.getMyCart();
 				},
-				(err: HttpErrorResponse) => {
+				error: (err) => {
 					this.toastr.error("Sorry, there are some app issue!");
 				}
-			);
+			});
 		}
 	}
 	
@@ -779,7 +782,7 @@ export class CartComponent implements OnInit, DoCheck {
 			item.quantity = ( item.counter == 1 ) ? item.quantity + 1 : item.quantity - 1;
 			let doAction = this.customer.updateQuantityInCart(item);
 			if ( doAction ) {
-				this.store.updateCart({productId: item.id, quantity: item.quantity}).subscribe(res=>{}, (err: HttpErrorResponse) => {});
+				this.store.updateCart({productId: item.id, quantity: item.quantity}).subscribe({next: (res)=>{}, error: (err) => {}});
 				this.getMyCart();
 			} else {
 				this.toastr.warning("Sorry, Cart not updated!");
@@ -798,8 +801,8 @@ export class CartComponent implements OnInit, DoCheck {
 	removeItemFromCart () {
 		if ( this.removeItem['cart_id'] ) {
 			this.confimMsg = 'Waiting ...';
-			this.store.removeCart(this.removeItem['cart_id']).subscribe(
-				res => {
+			this.store.removeCart(this.removeItem['cart_id']).subscribe({
+				next: (res) => {
 				  if( res.status ){
 					this.hideDeleteModal.nativeElement.click();
 					this.track.removeFromCart(this.removeItem);
@@ -809,10 +812,10 @@ export class CartComponent implements OnInit, DoCheck {
 					this.confimMsg = res.message;
 				  }
 				},
-				(err: HttpErrorResponse) => {
+				error: (err) => {
 				  this.toastr.warning("Sorry, there are some app issue!");
 				}
-			);
+			});
 		} else {
 			if ( this.customer.removeFromCart(this.removeItem) ) {
 				this.getMyCart();
@@ -823,7 +826,7 @@ export class CartComponent implements OnInit, DoCheck {
 		}
 	}
 
-	onSelectionChange(value:number, code:string){
+	onSelectionChange(value:number, code?:string){
 		this.inputData['paymentMethod'] = value;
 		this.methodForm.patchValue({paymentMethod:value});
 		this.finalMessage = "";
@@ -843,19 +846,19 @@ export class CartComponent implements OnInit, DoCheck {
             mobile: this.selectedAddress['mobile'],
             amount: this.grandFinalTotal
         };
-        this.store.getOtp(formData).subscribe(
-            res => {
+        this.store.getOtp(formData).subscribe({
+            next: (res) => {
                 if ( res.status ) {
                     this.otpResponse['textClass'] = 'text-success';
                 } else {
                     this.otpResponse['textClass']= 'text-danger';
                 }
                 this.otpResponse['message'] = res.message;
-            }, (err: HttpErrorResponse) => {
+            }, error: (err) => {
                 this.otpResponse['textClass'] = 'text-danger';
                 this.otpResponse['message'] = 'Sorry, there are some app issue!';
             }
-        );
+        });
         return true;
     }
 
@@ -867,8 +870,8 @@ export class CartComponent implements OnInit, DoCheck {
                 userId: this.userId,
                 otp: this.otpResponse['otp']
             };
-            this.store.verifyOtp(formData).subscribe(
-                res => {
+            this.store.verifyOtp(formData).subscribe({
+                next: (res) => {
                     if ( res.status ) {
                         this.otpResponse['textClass'] = 'text-warning';
 						this.elem.nativeElement.querySelector('#closeOtpPopup').click();
@@ -877,11 +880,11 @@ export class CartComponent implements OnInit, DoCheck {
                         this.otpResponse['textClass'] = 'text-danger';
                     }
                     this.otpResponse['message'] = res.message;
-                }, (err: HttpErrorResponse) => {
+                }, error: (err) => {
                     this.otpResponse['textClass'] = 'text-danger';
                     this.otpResponse['message'] = 'Sorry, there are some app issue!';
                 }
-            );
+			});
         } else {
             this.otpResponse['textClass'] = 'text-danger';
             this.otpResponse['message'] = 'Please enter otp number!';
@@ -903,8 +906,8 @@ export class CartComponent implements OnInit, DoCheck {
 		}
 		//console.log(this.methodForm.value.paymentMethod);
 		if ( this.finalStatus ){
-			this.store.checkPincode(this.selectedAddress['pincode']).subscribe(
-				res => {
+			this.store.checkPincode(this.selectedAddress['pincode']).subscribe({
+				next: (res) => {
 					this.pincodeStatus = res.status; // 1 both, 2 prepaid, 3 postpaid, 0 not
 					if( this.pincodeStatus > 0 ){
 						this.finalMessage = 'Waiting...';
@@ -920,9 +923,8 @@ export class CartComponent implements OnInit, DoCheck {
 						this.finalMessage = "Sorry, service not available at pincode: "+this.selectedAddress['pincode'];
 					}					
 				},
-				(err: HttpErrorResponse) => {
-				}
-			);
+				error: (err) => { }
+			});
 			
 		}
 		return true;
@@ -943,8 +945,8 @@ export class CartComponent implements OnInit, DoCheck {
 			
 			//console.log(this.inputData);
 			this.orderPlaceStatus = 1;
-			this.store.saveOrderDetails(this.inputData).subscribe(
-			  res => {
+			this.store.saveOrderDetails(this.inputData).subscribe({
+			  next: (res) => {
 				this.orderPlaceStatus = 0;
 				if ( res.status ) {
 				  this.orderId = res.data.orderNumber;
@@ -957,14 +959,14 @@ export class CartComponent implements OnInit, DoCheck {
 				  this.finalMessage = res.message;
 				}
 			  },
-			  (err: HttpErrorResponse) => {
+			  error: (err: HttpErrorResponse) => {
 				if(err.error instanceof Error){
 				  console.log('Client Error: '+err.error.message);
 				}else{
 				  console.log(`Server Error: ${err.status}, body was: ${JSON.stringify(err.error)}`);
 				}
 			  }
-			);
+			});
 		} else {
 			this.finalMessage = 'Please wait process running...';
 		}

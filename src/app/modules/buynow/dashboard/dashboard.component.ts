@@ -21,7 +21,7 @@ export class DashboardComponent implements OnInit {
 	marquee = ''
 	userMenu = false;
 	basePath = '';
-	customerCart = [];
+	customerCart:any = [];
 	resultStatus = 0;
 	resultMsg = '';
 	sanitizer;
@@ -43,7 +43,7 @@ export class DashboardComponent implements OnInit {
 	selectedIndex = 0;
 	sliderConfig = {};
 	sliderIndex = 0;
-	@ViewChild('deleteConfirmModal', {static: false}) deleteConfirmModal: ElementRef;
+	@ViewChild('deleteConfirmModal', {static: false}) deleteConfirmModal: any;
 	cartTotal = 0;
 	cartLength = 0;
 	shoppingCart = [];
@@ -130,7 +130,7 @@ export class DashboardComponent implements OnInit {
 	
 	getProductList () {
 		this.resultStatus   = 0;
-		let offerCoupon = this.config.getOfferCoupon();
+		let offerCoupon = this.config.getOfferCoupon() || '';
 		let inputData = this.store.getCartInfo();
 		if ( offerCoupon != '' ) {
 			inputData['couponCode'] = offerCoupon;
@@ -138,8 +138,8 @@ export class DashboardComponent implements OnInit {
 		}
 		let prms = new HttpParams();
 		prms = prms.append('offerCoupon', offerCoupon);
-		this.product.getProductBuynow(prms).subscribe(
-            res => {
+		this.product.getProductBuynow(prms).subscribe({
+            next: (res) => {
                 if(res.status){
 					this.productsPack1 = res.data['productsPack1'];
 					this.productsPack2 = res.data['productsPack2'];
@@ -154,17 +154,18 @@ export class DashboardComponent implements OnInit {
 					this.startOfferTimer();
 				}
 				this.resultMsg = res.message;
-				this.resultStatus = 1;
             },
-            (err: HttpErrorResponse) => {
+            error: (err) => {
                 if(err.error instanceof Error){
 					this.resultMsg = err.error.message;
                 }else{
 					this.resultMsg = JSON.stringify(err.error);
                 }
+            },
+			complete: () => {
 				this.resultStatus = 1;
-            }
-        );
+			}
+        });
     }
 
 	addIntoCart (item) {
@@ -177,8 +178,8 @@ export class DashboardComponent implements OnInit {
 			carItemIds = carItemIds.join(',');
 			carItemQuantities = carItemQuantities.join(',');
 			let formData = {itemId: carItemIds, quantity: carItemQuantities, useraction: 'add'};
-			this.store.addToCart(formData).subscribe(
-				res => {
+			this.store.addToCart(formData).subscribe({
+				next: (res) => {
 					if ( res.data.cart ) { this.customer.setCart(res.data.cart); }
 					if( res.status ){								
 						this.toastr.success(res.message);
@@ -190,10 +191,10 @@ export class DashboardComponent implements OnInit {
 					this.customerCart = myCart['shopping']['cart'].map( (item) => { return item.id; });
 					this.getMiniCart();
 				},
-				(err: HttpErrorResponse) => {
+				error: (err) => {
 					this.toastr.error("Item not added: Sorry, there are some app issue!");
 				}
-			);
+			});
 		} else {
 			//localStorage.setItem('productId', item.id);
 			//this.router.navigate(['/registration']);
@@ -236,8 +237,8 @@ export class DashboardComponent implements OnInit {
 			carItemIds = carItemIds.join(',');
 			carItemQuantities = carItemQuantities.join(',');
 			let formData = {itemId: carItemIds, quantity: carItemQuantities, useraction: 'remove'};
-			this.store.addToCart(formData).subscribe(
-				res => {
+			this.store.addToCart(formData).subscribe({
+				next: (res) => {
 					if ( res.data.cart ) { this.customer.setCart(res.data.cart); }
 					if( res.status ){								
 						this.deleteConfirmModal.nativeElement.click();
@@ -247,16 +248,17 @@ export class DashboardComponent implements OnInit {
 					} else {
 						this.toastr.error(res.message);
 					}
-					this.removeAction = 0;
 					myCart = this.customer.getFromCart();
 					this.customerCart = myCart['shopping']['cart'].map( (item) => { return item.id; });
 					this.getMiniCart();
 				},
-				(err: HttpErrorResponse) => {
+				error: (err) => {
 					this.toastr.error("Item not removed: Sorry, there are some app issue!");
+				},
+				complete: () => {
 					this.removeAction = 0;
-				}
-			);						
+				},
+			});						
 		} else {
 			this.customer.setCart(shoppingCart);
 			this.customerCart = myCart['shopping']['cart'].map( (item) => { return item.id; });
@@ -274,27 +276,27 @@ export class DashboardComponent implements OnInit {
 		let products = [];
 		switch ( this.productType ) {
 			case 'pack-3': 
-				unisex = this.productsPack3.filter( (item) => { return item.gender == 'unisex'; }, '');
+				unisex = this.productsPack3.filter( (item) => { return item['gender'] == 'unisex'; }, '');
 				break;
 			case 'pack-2': 
-				unisex = this.productsPack2.filter( (item) => { return item.gender == 'unisex'; }, '');
+				unisex = this.productsPack2.filter( (item) => { return item['gender'] == 'unisex'; }, '');
 				break;
 			default: 
-				unisex = this.productsPack1.filter( (item) => { return item.gender == 'unisex'; }, '');
+				unisex = this.productsPack1.filter( (item) => { return item['gender'] == 'unisex'; }, '');
 		}
 		if ( this.gender == 'unisex' ) {
-			products = this.productsPack1.filter( (item) => { return item.gender == 'mfemale'; }, '');
+			products = this.productsPack1.filter( (item) => { return item['gender'] == 'mfemale'; }, '');
 			this.filterProducts = products.concat(unisex);
 		} else {
 			switch ( this.productType ) {
 				case 'pack-3': 
-					products = this.productsPack3.filter( (item) => { return item.gender == this.gender; }, this.gender);
+					products = this.productsPack3.filter( (item) => { return item['gender'] == this.gender; }, this.gender);
 					break;
 				case 'pack-2':
-					products = this.productsPack2.filter( (item) => { return item.gender == this.gender; }, this.gender);
+					products = this.productsPack2.filter( (item) => { return item['gender'] == this.gender; }, this.gender);
 					break;
 				default: 
-					products = this.productsPack1.filter( (item) => { return item.gender == this.gender; }, this.gender);
+					products = this.productsPack1.filter( (item) => { return item['gender'] == this.gender; }, this.gender);
 			}
 			this.filterProducts = products.concat(unisex);
 		}

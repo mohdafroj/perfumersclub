@@ -1,10 +1,10 @@
+/*
 @import './../node_modules/slick-carousel/slick/slick.css';
 @import './../node_modules/slick-carousel/slick/slick-theme.css';
-@import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
-@import './../node_modules/ngx-toastr/toastr.css';
+@import 'https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400,700';
 @import './assets/css/bootstrap.min.css';
+*/
 @import './assets/css/fontawesome.min.css';
-/*@import 'https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400,700';*/
 @import './assets/css/swiper.css';
 @import './assets/css/custom.css';
 
@@ -38,3 +38,6 @@
 	.gender_popup .modal-header h4{font-size:1.3rem;}
 	.gender_popup .modal-footer .btn{font-size:1.2rem;}
 }
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser, isPlatformServer } from '@angular/common';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Myconfig } from './../../_services/pb/myconfig';
-
 interface ItemsResponse {
   status:boolean,
   message:string,
@@ -13,9 +13,11 @@ interface ItemsResponse {
 })
 export class PagesService {
     pbApi:string;
-    constructor( private config: Myconfig, private http: HttpClient ) {
-        this.pbApi = config.apiEndPoint;
-		//console.log("page service called");
+    constructor( 
+      @Inject(PLATFORM_ID) private _platformId: Object,
+      private config: Myconfig, 
+      private http: HttpClient ) {
+      this.pbApi = this.config.apiEndPoint;      
     }
 	
     getCode(prms){
@@ -44,17 +46,17 @@ export class PagesService {
     }
 
 	getCompanyData(){
-		let company;
-		if( localStorage.getItem('pccompany') ){
-			company = localStorage.getItem('pccompany');
-			company = JSON.parse(company);
-		}
-		return company;
+		let company = {company:{name:'',add:'',city:'',state:'',country:'',pin:'',code:'',phone:'',email:'',website:'',start_year:'',facebook:'',youtube:'',twitter:'',pinterest:'',instagram:''}};
+      let c = localStorage.getItem('pccompany');
+      if( c ){
+        company = JSON.parse(c);
+      }
+		  return company;
     }
 
 	setCompanyData(company){
-		localStorage.setItem('pccompany', JSON.stringify(company));
-		return company;
+    localStorage.setItem('pccompany', JSON.stringify(company));
+		  return company;
     }
 
 }

@@ -17,7 +17,7 @@ import { DeleteDialogComponent } from './delete-dialog/delete-dialog.component';
 	]
 })
 export class AddressBookComponent implements OnInit {
-	addressForm:FormGroup;
+	addressForm;
 	resObject = {};
 	response = {};
 	serverRequest = true;
@@ -84,8 +84,8 @@ export class AddressBookComponent implements OnInit {
 		this.resObject['textClass'] = 'text-warning';
 		if ( this.serverRequest ) {
 			this.serverRequest = false;
-			this.customer.addAddresses(address).subscribe(
-				res => {
+			this.customer.addAddresses(address).subscribe({
+				next: (res) => {
 					this.serverRequest = true;
 					this.resObject['message'] = res.message;
 					if( res.status ){
@@ -96,7 +96,7 @@ export class AddressBookComponent implements OnInit {
 						this.resObject['textClass'] = 'text-danger';
 					}
 				},
-				(err: HttpErrorResponse) => {
+				error: (err) => {
 					if(err.error instanceof Error){
 						this.resObject['message'] = 'Client error: '+err.error.message;
 					}else{
@@ -105,7 +105,7 @@ export class AddressBookComponent implements OnInit {
 					this.serverRequest = true;
 					this.resObject['textClass'] = 'text-danger';
 				}
-			);
+			});
 		}	
 	}
     

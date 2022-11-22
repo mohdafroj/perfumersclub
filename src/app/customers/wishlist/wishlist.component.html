@@ -28,10 +28,10 @@
 							<img [src]="(item.product.product_images.img_base != undefined ) ? item.product.product_images.img_base : 'assets/images/is-base.jpg'" [alt]="item.title" width="70" class="img-fluid">
 						</span>
 						<h5><!-- start of image_detail -->
-							<a routerLink="/{{item.product.url_key}}" class="text-dark d-inline-block align-middle">{{item.title}}</a>
+							<a routerLink="['/', item['product']['url_key']]" class="text-dark d-inline-block align-middle">{{item.title}}</a>
 						</h5><!-- end of image_detail -->
 					</td>
-					<td data-title="Price" class="align-middle">₹{{item.price | number:'2.2-2'}}</td>
+					<td data-title="Price" class="align-middle">₹{{ item['price'] }}</td>
 					<td data-title="Status" class="align-middle status_btn">
 						<span *ngIf="item.product.is_stock != 'in_stock'">Out Of Stock</span>
 						<button *ngIf="item.product.is_stock == 'in_stock'" (click)="addCart(item);" class="btn my-btn checkout_btn from-left">Add To Cart</button>

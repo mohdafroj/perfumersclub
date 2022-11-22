@@ -18,19 +18,19 @@ import { Myconfig } from './../../../_services/pb/myconfig';
 })
 export class DashboardComponent implements OnInit {
 	userId = 0;
-	customerCart = [];
+	customerCart:any = [];
 	tabIndex = 'A';
 	sliderIndex = 0;
 	gender = '';
 	brandId = 0;
-	families = [];
+	families:any = [];
 	brands = [];
 	algoProducts = [];
-	selectedFamily = [];
+	selectedFamily:any = [];
 	favoriteKeywords = [];
 	sanitizer;
 	productList = [];
-	productDetail = {};
+	productDetail:any = {};
 	resultStatus = 0;
 	resultMsg = '';
 	myControl;
@@ -59,7 +59,7 @@ export class DashboardComponent implements OnInit {
 	}
 	
 	getScentMatch(){
-		let favoritePerfume = this.favoriteKeywords.map( (item) => item.id );
+		let favoritePerfume = this.favoriteKeywords.map( (item) => item['id'] );
 		this.resultStatus   = 0;
 		this.productList = [];
 		let prms = new HttpParams();
@@ -67,8 +67,8 @@ export class DashboardComponent implements OnInit {
 		prms = prms.append('brand', `${this.brandId}`);
 		prms = prms.append('families', `${this.selectedFamily}`);
 		prms = prms.append('favoritePerfumes', `${favoritePerfume}`);
-		this.product.getScentMatch(prms).subscribe(
-            res => {
+		this.product.getScentMatch(prms).subscribe({
+            next: (res) => {
                 if(res.status){
 					this.productList = res.data['products'];
 					if ( this.families.length == 0 ) {
@@ -83,17 +83,18 @@ export class DashboardComponent implements OnInit {
 					}
 				}
 				this.resultMsg = res.message;
-				this.resultStatus = 1;
             },
-            (err: HttpErrorResponse) => {
+            error: (err: HttpErrorResponse) => {
                 if(err.error instanceof Error){
 					this.resultMsg = err.error.message;
                 }else{
 					this.resultMsg = JSON.stringify(err.error);
                 }
+            },
+			complete: () => {
 				this.resultStatus = 1;
-            }
-        );
+			}
+        });
     }
 	
 	getSelectedValue(item) {
@@ -103,17 +104,16 @@ export class DashboardComponent implements OnInit {
 	getAlgoProducts(search) {
 		let prms = new HttpParams();
 		prms = prms.append('search', search);
-		this.product.getAlgoProducts(prms).subscribe(
-            res => {
+		this.product.getAlgoProducts(prms).subscribe({
+            next: (res) => {
 				this.algoProducts = res['data'];
             },
-            (err: HttpErrorResponse) => {
-            }
-        );
+            error: (err) => {}
+        });
 	}
 	
 	selectFamily (item, e) {
-		if ( this.selectedFamily.includes(item.id) ) {
+		if ( this.selectedFamily.includes(item['id']) ) {
 			this.selectedFamily = this.selectedFamily.filter( (s) => { return s != item.id; }, item.id );
 		} else if ( this.selectedFamily.length > 2 ) {
 			this.toastr.error("Sorry, family limit exceeded..");
@@ -135,12 +135,12 @@ export class DashboardComponent implements OnInit {
 	
 	addKeywordsOld (text1) {
 		if ( text1 != '' ) {
-			let selectedCase = this.favoriteKeywords.filter( (item) => { return text1 == item.name; }, text1 )[0];
+			let selectedCase = this.favoriteKeywords.filter( (item) => { return text1 == item['name']; }, text1 )[0];
 			if ( this.favoriteKeywords.length > 2 ) {
 				this.toastr.error("Sorry, you can not select more than 3 keywords!");
 			} else {
 				if ( selectedCase == undefined ) {
-					let keyword = this.algoProducts.filter( (item) => { return text1 == item.name; }, text1 )[0];
+					let keyword = this.algoProducts.filter( (item) => { return text1 == item['name']; }, text1 )[0];
 					if ( keyword == undefined ) {
 						this.toastr.error("Keyword should be from suggestion box!");
 					} else {
@@ -158,7 +158,7 @@ export class DashboardComponent implements OnInit {
 
 	addKeywords (text1) {
 		if ( text1 != '' ) {
-			let keyword = this.algoProducts.filter( (item) => { return text1 == item.name; }, text1 )[0];
+			let keyword = this.algoProducts.filter( (item) => { return text1 == item['name']; }, text1 )[0];
 			this.favoriteKeywords = [];
 			if ( keyword == undefined ) {
 				this.toastr.error("Keyword should be from suggestion box!");
@@ -171,7 +171,7 @@ export class DashboardComponent implements OnInit {
 	}
 
 	removeKeywords (item) {
-		this.favoriteKeywords = this.favoriteKeywords.filter( (s) => { return s.id != item.id; }, item );
+		this.favoriteKeywords = this.favoriteKeywords.filter( (s) => { return s['id'] != item.id; }, item );
 	}
 	
 	viewProduct(item) {
@@ -189,8 +189,8 @@ export class DashboardComponent implements OnInit {
 			carItemIds = carItemIds.join(',');
 			carItemQuantities = carItemQuantities.join(',');
 			let formData = {itemId: carItemIds, quantity: carItemQuantities, useraction: 'add'};			
-			this.store.addToCart(formData).subscribe(
-				res => {
+			this.store.addToCart(formData).subscribe({
+				next: (res) => {
 					if ( res.data.cart ) { this.customer.setCart(res.data.cart); }
 					if( res.status ){								
 						this.toastr.success(res.message);
@@ -201,10 +201,10 @@ export class DashboardComponent implements OnInit {
 					let myCart = this.customer.getFromCart();
 					this.customerCart = myCart['shopping']['cart'].map( (item) => { return item.id; });
 				},
-				(err: HttpErrorResponse) => {
+				error: (err) => {
 					this.toastr.error("Sorry, there are some app issue!");
 				}
-			);
+			});
 		} else {
 			//localStorage.setItem('productId', item.id);
 			//this.router.navigate(['/registration']);

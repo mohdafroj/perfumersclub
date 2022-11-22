@@ -1,5 +1,6 @@
+import { CommonModule } from '@angular/common';
 import { NoopAnimationsModule, BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { BrowserModule, BrowserTransferStateModule } from '@angular/platform-browser';
+import { BrowserModule } from '@angular/platform-browser'; //BrowserTransferStateModule
 import { NgModule } from '@angular/core';
 
 import { ToastrModule, ToastContainerModule  } 	from 'ngx-toastr';
@@ -7,7 +8,7 @@ import { MatExpansionModule } 					from '@angular/material/expansion';
 import { MatAutocompleteModule} 				from '@angular/material/autocomplete';
 import { MatFormFieldModule} 					from '@angular/material/form-field';
 import { MatInputModule} 						from '@angular/material/input';
-import { SwiperModule } from "swiper/angular";
+import { SwiperModule } from 'swiper/angular';
 import { ReactiveFormsModule, FormsModule } 	from '@angular/forms';
 import { HttpClientModule,HTTP_INTERCEPTORS } 	from '@angular/common/http';
 
@@ -25,8 +26,8 @@ import { AppComponent } from './app.component';
 import { HomeComponent } from './components/home/home.component';
 import { HeaderComponent } from './layout/header/header.component';
 import { FooterComponent } from './layout/footer/footer.component';
-import { MiniCartComponent } from './layout/mini-cart/mini-cart.component';
-import { AccountComponent } from './components/account/account.component';
+//import { MiniCartComponent } from './layout/mini-cart/mini-cart.component';
+//import { AccountComponent } from './components/account/account.component';
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
 import { CmsComponent } from './components/cms/cms.component';
@@ -37,39 +38,40 @@ import { CmsComponent } from './components/cms/cms.component';
     HomeComponent,
     HeaderComponent,
     FooterComponent,
-    MiniCartComponent,
-	LoginComponent,
-	RegisterComponent,
-	AccountComponent,
-	CmsComponent
+    //MiniCartComponent,
+  	LoginComponent,
+	  RegisterComponent,
+	  //AccountComponent,
+	  CmsComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),
     NoopAnimationsModule,
-	BrowserAnimationsModule,
-    BrowserTransferStateModule,
-	HttpClientModule,
-	FormsModule,
-	ReactiveFormsModule,
+	  BrowserAnimationsModule,
+	  HttpClientModule,
+	  FormsModule,
+	  ReactiveFormsModule,
     HttpClientModule,
-	ToastrModule.forRoot({
-		progressBar:true,
-		progressAnimation:'increasing'
-	}),
-	ToastContainerModule,
-	AccordionModule.forRoot(),
-	BsDropdownModule.forRoot(),
-	MatAutocompleteModule,
-	MatFormFieldModule,
-	MatInputModule,
-	MatExpansionModule,
-	SlickCarouselModule,
-	SwiperModule,
+    ToastrModule.forRoot({
+      progressBar:true,
+      progressAnimation:'increasing'
+    }),
+    ToastContainerModule,
+    AccordionModule.forRoot(),
+    BsDropdownModule.forRoot(),
+    MatAutocompleteModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatExpansionModule,
+    SlickCarouselModule,
+    SwiperModule,
+    CommonModule,
     AppRoutingModule,
-	ProductModule
+    ProductModule
   ],
   providers: [
-    { provide: HTTP_INTERCEPTORS, useClass: PBInterceptor, multi: true }, CookieService
+    { provide: HTTP_INTERCEPTORS, useClass: PBInterceptor, multi: true }, 
+    CookieService
   ],
   bootstrap: [AppComponent]
 })

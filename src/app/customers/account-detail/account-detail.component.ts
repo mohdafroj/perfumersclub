@@ -14,7 +14,7 @@ import { CustomerService } from '../../_services/pb/customer.service';
 	]
 })
 export class AccountDetailComponent implements OnInit {
-	rForm:FormGroup;
+	rForm;
 	msg:string		= '';
 	response:any		= '';
 	constructor(
@@ -44,8 +44,8 @@ export class AccountDetailComponent implements OnInit {
       created:'',
       modified:''
     }
-    this.customer.getProfile().subscribe(
-      res => {
+    this.customer.getProfile().subscribe({
+      next: (res) => {
         if(res.status){
           this.response = res.data;
           //console.log(res.message);
@@ -58,16 +58,16 @@ export class AccountDetailComponent implements OnInit {
           mobile: new FormControl(this.response.mobile, Validators.required)
         });
       },
-      (err: HttpErrorResponse) => {
+      error: (err) => {
         console.log("Server Isse!");
       }
-    );
+   });
 
   }
   customerDetail(detail){
     this.msg = 'Wait...';
-    this.customer.updateProfile(detail).subscribe(
-      res => {
+    this.customer.updateProfile(detail).subscribe({
+      next: (res) => {
         //console.log(res);
         if(res.status){
           this.router.navigate(['/customer/profile']);
@@ -75,13 +75,13 @@ export class AccountDetailComponent implements OnInit {
           this.msg = res.message;
         }
       },
-      (err: HttpErrorResponse) => {
+      error: (err) => {
         if(err.error instanceof Error){
           this.msg = 'Client error: '+err.error.message;
         }else{
           this.msg = 'Server error: '+JSON.stringify(err.error);
         }
       }
-    );
+    });
   }
 }

@@ -19,7 +19,7 @@ export class SuccessComponent implements OnInit{
 	orderCurrency = '';
 	orderPrefix 	= '';
 	orderMessage 	= '';
-	company;
+	company:any;
 	sanitizer:any;
 	constructor ( 
 		private router: Router, 

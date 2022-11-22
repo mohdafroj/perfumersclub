@@ -35,7 +35,7 @@
                     </div>
 					
 					<div class="col-12 secBanner">
-						<img src="assets/images/home/difference_perfumes_m.png" class="img-fluid mx-auto  d-block w-100" alt="Difference Perfumes">
+						<img src="assets/images/home/difference_perfumes_m.webp" class="img-fluid mx-auto  d-block w-100" alt="Difference Perfumes">
 					</div>
                 </div>
             </div>
@@ -43,6 +43,9 @@
 		<!-- slider 1 -->
 		<section class="section_box"><!-- start of section_box -->
 			<figure class="sceBannerStuff">
+				<span class="imgGradientEff">
+					<img src="assets/images/imgGradient.png" class="img-fluid d-block w-100" alt="Bombshell">
+				</span>
 				<span class="imgTagLine">Rendering Beautiful Product Shots</span>
 				<img src="assets/images/home/banner/Lightr+3X8ml.webp" class="img-fluid d-md-block d-none" alt="Lightr+3X8ml" style="width:inherit" />
 				<img src="assets/images/home/banner/M-Lightr+3X8ml.webp" class="img-fluid d-md-none d-block" alt="Lightr+3X8ml" style="width:inherit" />
@@ -69,18 +72,18 @@
 						<div class="slidesCard">
 							<div class="swiper-slide card">
 								<div class="card-body">
-									<h5 class="card-title">{{item.name}}</h5>
+									<h5 class="card-title">{{item['name']}}</h5>
 									<figure (click)="viewPage(item);">
 										<img [src]="item['images'][0]['large']" [alt]="item['images'][0]['alt']" class="img-fluid mx-auto d-block" />
-										<figcaption *ngIf="item.rating" class="figure-caption">
-											{{item.rating | number: '1.1-1'}}<i class="fas fa-star"></i>
+										<figcaption *ngIf="item['rating']" class="figure-caption">
+											{{item['rating'] | number: '1.1-1'}}<i class="fas fa-star"></i>
 										</figcaption>
-										<div *ngIf="item.isStock == 'out_of_stock'" class="out_of_stock"><span>Out Of Stock</span></div>
+										<div *ngIf="item['isStock'] == 'out_of_stock'" class="out_of_stock"><span>Out Of Stock</span></div>
 									</figure>
 								</div>
 								
 								<h3 class="cardPrice">
-									₹{{item.price | number: '2.2-2'}} <del *ngIf="item.discount.original > 0">₹{{item.discount.original | number: '2.2-2'}}</del>
+									₹{{item['price'] | number: '2.2-2'}} <del *ngIf="item['discount']['original'] > 0">₹{{item['discount']['original'] | number: '2.2-2'}}</del>
 								</h3>
 							</div>
 						</div>
@@ -118,6 +121,9 @@
 		<!-- slider 2 -->
 		<section class="section_box">
 			<figure class="sceBannerStuff">
+				<span class="imgGradientEff">
+					<img src="assets/images/imgGradient.png" class="img-fluid d-block w-100" alt="Bombshell">
+				</span>
 				<img src="assets/images/home/banner/Packof3X50ml.webp" class="img-fluid d-md-block d-none" alt="Packof3X50ml" style="width:inherit" />
 				<img src="assets/images/home/banner/M-Packof3X50ml.webp" class="img-fluid d-md-none d-block" alt="Packof3X50ml" style="width:inherit" />
 				<figcaption class="figure-caption">
@@ -142,18 +148,18 @@
 						<div class="slidesCard">
 							<div class="swiper-slide card">
 								<div class="card-body">
-									<h5 class="card-title">{{item.name}}</h5>
+									<h5 class="card-title">{{item['name']}}</h5>
 									<figure (click)="viewPage(item);">
 										<img [src]="item['images'][0]['large']" [alt]="item['images'][0]['alt']" class="img-fluid mx-auto d-block" />
-										<figcaption *ngIf="item.rating" class="figure-caption">
-											{{item.rating | number: '1.1-1'}}<i class="fas fa-star"></i>
+										<figcaption *ngIf="item['rating']" class="figure-caption">
+											{{item['rating'] | number: '1.1-1'}}<i class="fas fa-star"></i>
 										</figcaption>
-										<div *ngIf="item.isStock == 'out_of_stock'" class="out_of_stock"><span>Out Of Stock</span></div>
+										<div *ngIf="item['isStock'] == 'out_of_stock'" class="out_of_stock"><span>Out Of Stock</span></div>
 									</figure>
 								</div>
 								
 								<h3 class="cardPrice">
-									₹{{item.price | number: '2.2-2'}} <del *ngIf="item.discount.original > 0">₹{{item.discount.original | number: '2.2-2'}}</del>
+									₹{{item['price'] | number: '2.2-2'}} <del *ngIf="item['discount']['original'] > 0">₹{{item['discount']['original'] | number: '2.2-2'}}</del>
 								</h3>
 							</div>
 						</div>
@@ -190,6 +196,9 @@
 		<!-- slider 3 -->
 		<section class="section_box">
 			<figure class="sceBannerStuff">
+				<span class="imgGradientEff">
+					<img src="assets/images/imgGradient.png" class="img-fluid d-block w-100" alt="Bombshell">
+				</span>
 				<img src="assets/images/home/banner/Packof7X8ml.webp" class="img-fluid d-md-block d-none" alt="Packof7X8ml" style="width:inherit" />
 				<img src="assets/images/home/banner/M-Packof7X8ml.webp" class="img-fluid d-md-none d-block" alt="Packof7X8ml" style="width:inherit" />
 				<figcaption class="figure-caption">
@@ -214,18 +223,18 @@
 						<div class="slidesCard">
 							<div class="swiper-slide card">
 								<div class="card-body">
-									<h5 class="card-title">{{item.name}}</h5>
+									<h5 class="card-title">{{item['name']}}</h5>
 									<figure (click)="viewPage(item);">
 										<img [src]="item['images'][0]['large']" [alt]="item['images'][0]['alt']" class="img-fluid mx-auto d-block" />
-										<figcaption *ngIf="item.rating" class="figure-caption">
-											{{item.rating | number: '1.1-1'}}<i class="fas fa-star"></i>
+										<figcaption *ngIf="item['rating']" class="figure-caption">
+											{{item['rating'] | number: '1.1-1'}}<i class="fas fa-star"></i>
 										</figcaption>
-										<div *ngIf="item.isStock == 'out_of_stock'" class="out_of_stock"><span>Out Of Stock</span></div>
+										<div *ngIf="item['isStock'] == 'out_of_stock'" class="out_of_stock"><span>Out Of Stock</span></div>
 									</figure>
 								</div>
 								
 								<h3 class="cardPrice">
-									₹{{item.price | number: '2.2-2'}} <del *ngIf="item.discount.original > 0">₹{{item.discount.original | number: '2.2-2'}}</del>
+									₹{{item['price'] | number: '2.2-2'}} <del *ngIf="item['discount']['original'] > 0">₹{{item['discount']['original'] | number: '2.2-2'}}</del>
 								</h3>
 							</div>
 						</div>
@@ -262,6 +271,9 @@
 		<!-- slider 4 -->
 		<section class="section_box">
 			<figure class="sceBannerStuff">
+				<span class="imgGradientEff">
+					<img src="assets/images/imgGradient.png" class="img-fluid d-block w-100" alt="Bombshell">
+				</span>
 				<img src="assets/images/home/banner/Lightr+7X8ml.webp" class="img-fluid d-md-block d-none" alt="Lightr+7X8ml" style="width:inherit" />
 				<img src="assets/images/home/banner/M-Lightr+7X8ml.webp" class="img-fluid d-md-none d-block" alt="Lightr+7X8ml" style="width:inherit" />
 				<figcaption class="figure-caption">
@@ -286,18 +298,18 @@
 						<div class="slidesCard">
 							<div class="swiper-slide card">
 								<div class="card-body">
-									<h5 class="card-title">{{item.name}}</h5>
+									<h5 class="card-title">{{item['name']}}</h5>
 									<figure (click)="viewPage(item);">
 										<img [src]="item['images'][0]['large']" [alt]="item['images'][0]['alt']" class="img-fluid mx-auto d-block" />
-										<figcaption *ngIf="item.rating" class="figure-caption">
-											{{item.rating | number: '1.1-1'}}<i class="fas fa-star"></i>
+										<figcaption *ngIf="item['rating']" class="figure-caption">
+											{{item['rating'] | number: '1.1-1'}}<i class="fas fa-star"></i>
 										</figcaption>
-										<div *ngIf="item.isStock == 'out_of_stock'" class="out_of_stock"><span>Out Of Stock</span></div>
+										<div *ngIf="item['isStock'] == 'out_of_stock'" class="out_of_stock"><span>Out Of Stock</span></div>
 									</figure>
 								</div>
 								
 								<h3 class="cardPrice">
-									₹{{item.price | number: '2.2-2'}} <del *ngIf="item.discount.original > 0">₹{{item.discount.original | number: '2.2-2'}}</del>
+									₹{{item['price'] | number: '2.2-2'}} <del *ngIf="item['discount']['original'] > 0">₹{{item['discount']['original'] | number: '2.2-2'}}</del>
 								</h3>
 							</div>
 						</div>
@@ -334,6 +346,9 @@
 		<!-- slider 5 -->
 		<section class="section_box">
 			<figure class="sceBannerStuff">
+				<span class="imgGradientEff">
+					<img src="assets/images/imgGradient.png" class="img-fluid d-block w-100" alt="Bombshell">
+				</span>
 				<img src="assets/images/home/banner/RefillOf3X8ml.webp" class="img-fluid d-md-block d-none" alt="RefillOf3X8ml" style="width:inherit" />
 				<img src="assets/images/home/banner/M-RefillOf3X8ml.webp" class="img-fluid d-md-none d-block" alt="RefillOf3X8ml" style="width:inherit" />
 				<figcaption class="figure-caption">
@@ -358,18 +373,18 @@
 						<div class="slidesCard">
 							<div class="swiper-slide card">
 								<div class="card-body">
-									<h5 class="card-title">{{item.name}}</h5>
+									<h5 class="card-title">{{item['name']}}</h5>
 									<figure (click)="viewPage(item);">
 										<img [src]="item['images'][0]['large']" [alt]="item['images'][0]['alt']" class="img-fluid mx-auto d-block" />
-										<figcaption *ngIf="item.rating" class="figure-caption">
-											{{item.rating | number: '1.1-1'}}<i class="fas fa-star"></i>
+										<figcaption *ngIf="item['rating']" class="figure-caption">
+											{{item['rating'] | number: '1.1-1'}}<i class="fas fa-star"></i>
 										</figcaption>
-										<div *ngIf="item.isStock == 'out_of_stock'" class="out_of_stock"><span>Out Of Stock</span></div>
+										<div *ngIf="item['isStock'] == 'out_of_stock'" class="out_of_stock"><span>Out Of Stock</span></div>
 									</figure>
 								</div>
 								
 								<h3 class="cardPrice">
-									₹{{item.price | number: '2.2-2'}} <del *ngIf="item.discount.original > 0">₹{{item.discount.original | number: '2.2-2'}}</del>
+									₹{{item['price'] | number: '2.2-2'}} <del *ngIf="item['discount']['original'] > 0">₹{{item['discount']['original'] | number: '2.2-2'}}</del>
 								</h3>
 							</div>
 						</div>
@@ -407,6 +422,9 @@
 		<!-- slider 6 -->
 		<section class="section_box">
 			<figure class="sceBannerStuff">
+				<span class="imgGradientEff">
+					<img src="assets/images/imgGradient.png" class="img-fluid d-block w-100" alt="Bombshell">
+				</span>
 				<span class="imgTagLine">Rendering Beautiful Product Shots</span>
 				<img src="assets/images/home/banner/Single50ml.webp" class="img-fluid d-md-block d-none" alt="Single50ml" style="width:inherit" />
 				<img src="assets/images/home/banner/M-Single50ml.webp" class="img-fluid d-md-none d-block" alt="Single50ml" style="width:inherit" />
@@ -432,18 +450,18 @@
 						<div class="slidesCard">
 							<div class="swiper-slide card">
 								<div class="card-body">
-									<h5 class="card-title">{{item.name}}</h5>
+									<h5 class="card-title">{{item['name']}}</h5>
 									<figure (click)="viewPage(item);">
 										<img [src]="item['images'][0]['large']" [alt]="item['images'][0]['alt']" class="img-fluid mx-auto d-block" />
-										<figcaption *ngIf="item.rating" class="figure-caption">
-											{{item.rating | number: '1.1-1'}}<i class="fas fa-star"></i>
+										<figcaption *ngIf="item['rating']" class="figure-caption">
+											{{item['rating'] | number: '1.1-1'}}<i class="fas fa-star"></i>
 										</figcaption>
-										<div *ngIf="item.isStock == 'out_of_stock'" class="out_of_stock"><span>Out Of Stock</span></div>
+										<div *ngIf="item['isStock'] == 'out_of_stock'" class="out_of_stock"><span>Out Of Stock</span></div>
 									</figure>
 								</div>
 								
 								<h3 class="cardPrice">
-									₹{{item.price | number: '2.2-2'}} <del *ngIf="item.discount.original > 0">₹{{item.discount.original | number: '2.2-2'}}</del>
+									₹{{item['price'] | number: '2.2-2'}} <del *ngIf="item['discount']['original'] > 0">₹{{item['discount']['original'] | number: '2.2-2'}}</del>
 								</h3>
 							</div>
 						</div>
@@ -472,7 +490,7 @@
 				<a class="btn my-btn cart_btn from-left" [routerLink]="['/', 'shopnow']">
 					Shop Now
 				</a>
-				<a class="btn my-btn cart_btn from-left" [routerLink]="['/', 'shopnow']" [queryParams]="{type: config.categories.category6.key}">
+				<a class="btn my-btn cart_btn from-left" [routerLink]="['/', 'shopnow']" [queryParams]="{type: config['categories']['category6']['key']}">
 					View More
 				</a>
 			</div>			

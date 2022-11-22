@@ -29,11 +29,11 @@ import { RedeemComponent } from './redeem/redeem.component';
     CommonModule,
     ReactiveFormsModule,
     FormsModule,
-	MatDialogModule,
-	MatFormFieldModule,
-	MatInputModule,
+	  MatDialogModule,
+	  MatFormFieldModule,
+	  MatInputModule,
     CustomersRoutingModule,
-	ClipboardModule
+	  ClipboardModule
   ],
   declarations:[
     CustomerComponent,
@@ -44,10 +44,10 @@ import { RedeemComponent } from './redeem/redeem.component';
     InvoiceComponent,
     DetailsComponent,
     WalletComponent,
-	WishlistComponent,
+	  WishlistComponent,
     NewsletterComponent,
     ShareEarnComponent,
-	ReviewsComponent,
+	  ReviewsComponent,
     DeleteDialogComponent,
     CustomerComponent,
     DashboardComponent,
@@ -62,9 +62,9 @@ import { RedeemComponent } from './redeem/redeem.component';
     InvoiceComponent,
     DetailsComponent,
     WalletComponent,
-	WishlistComponent,
-	ReviewsComponent,
-	ShareEarnComponent,
+	  WishlistComponent,
+	  ReviewsComponent,
+	  ShareEarnComponent,
     NewsletterComponent
   ],
   entryComponents: [DeleteDialogComponent]

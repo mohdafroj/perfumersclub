@@ -2,10 +2,14 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
+    "paths": {
+      "swiper_angular": ["node_modules/swiper/angular"]
+    },
     "baseUrl": "./",
     "outDir": "./dist/out-tsc",
     "forceConsistentCasingInFileNames": true,
     "strict": true,
+    "noImplicitAny":false,
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
@@ -16,8 +20,11 @@
     "experimentalDecorators": true,
     "moduleResolution": "node",
     "importHelpers": true,
+    "suppressImplicitAnyIndexErrors":true,
+    "strictNullChecks":true,
+    "strictPropertyInitialization":true,
     "target": "es2020",
-    "module": "es2020",
+    "module": "esnext",
     "lib": [
       "es2020",
       "dom"

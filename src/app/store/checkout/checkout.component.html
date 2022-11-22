@@ -175,7 +175,7 @@
                                             </label><!-- end of label -->
                                         </div><!-- end of product_div -->
                                         <div [hidden]="addressId != -1" class="col-md-12 col-12"><!-- start of product_div -->
-                                            <p [ngClass]="addressResponse.textClass"  [innerHTML]="addressResponse.message"></p>
+                                            <p [ngClass]="addressResponse['textClass']"  [innerHTML]="addressResponse['message']"></p>
                                         </div><!-- end of product_div -->
                                     </div><!-- end of address_form -->
                                 	
@@ -218,7 +218,7 @@
 										
 											<div class="form-group col-sm-6 col-12"><!-- start of stateField -->
 												<select *ngIf="addresses['states']" class="custom-select form-control" formControlName="state" required>
-													<option *ngFor="let item of addresses.states" [value]="item.title">{{item.title}}</option>
+													<option *ngFor="let item of addresses['states']" [value]="item.title">{{item.title}}</option>
 												</select>
 											</div><!-- end of City -->
 										
@@ -227,7 +227,7 @@
 											</div><!-- end of countryField -->
 											
 											<div *ngIf="addressResponse['message']" class="form-group col-sm-6 col-12 errorMszShow"><!-- start of countryField -->
-												<p [ngClass]="addressResponse.textClass"  [innerHTML]="addressResponse.message"></p>
+												<p [ngClass]="addressResponse['textClass']"  [innerHTML]="addressResponse['message']"></p>
 											</div><!-- end of countryField -->
 											
 											<div class="form-group col-12 checkoutBtn"><!-- start of button -->
@@ -244,17 +244,17 @@
                                 
                                     <div *ngFor="let item of shoppingCart;" class="col-12 cartReviewDiv"><!-- start of row_section -->
                                     	<div class="cartImage"><!-- start of cartImage -->
-                                        	<img [src]="item.images[0].url" [alt]="item.name" [title]="item.name" class="img-fluid" width="70">
+                                        	<img [src]="item['images'][0]['url']" [alt]="item['name']" [title]="item['name']" class="img-fluid" width="70">
                                         </div><!-- end of cartImage -->
                                         
                                     	<div class="cartDetail"><!-- start of cartDetail -->
                                         
                                         	<div class="cartDetailHalf productNameImages"><!-- start of productNameImages -->
-                                            	<h6>{{item.title}}</h6>                                                
+                                            	<h6>{{item['title']}}</h6>                                                
                                             </div><!-- end of productNameImages -->
                                             
                                             <div class="cartDetailHalf productPriceSize"><!-- start of productPriceSize -->
-                                            	<span>{{item.cart_quantity}} Qty</span> <span><label [innerHTML]="sanitizer.bypassSecurityTrustHtml(cartCurrency)"></label>{{item.price * item.cart_quantity | number:'2.2-2'}} <del *ngIf="item['discount']['original'] != undefined">₹{{item.discount.original * item.cart_quantity | number:'2.2-2'}}</del></span>
+                                            	<span>{{item['cart_quantity']}} Qty</span> <span><label [innerHTML]="sanitizer.bypassSecurityTrustHtml(cartCurrency)"></label>{{item['price'] * item['cart_quantity'] | number:'2.2-2'}} <del *ngIf="item['discount']['original'] != undefined">₹{{item['discount']['original'] * item['cart_quantity'] | number:'2.2-2'}}</del></span>
                                             </div><!-- end of productPriceSize -->
                                             
                                         </div><!-- end of cartDetail -->
@@ -262,23 +262,23 @@
                                 	
                                     <div *ngFor="let item of shoppingPack;" class="col-12 cartReviewDiv"><!-- start of row_section -->
                                     	<div class="cartImage"><!-- start of cartImage -->
-                                        	<img [src]="item.image" [alt]="item.title" [title]="item.title" class="img-fluid" width="70">
+                                        	<img [src]="item['image']" [alt]="item['title']" [title]="item['title']" class="img-fluid" width="70">
                                         </div><!-- end of cartImage -->
                                         
                                     	<div class="cartDetail"><!-- start of cartDetail -->
                                         
                                         	<div class="cartDetailHalf productNameImages"><!-- start of productNameImages -->
-                                            	<h6>{{item.title}}</h6>
+                                            	<h6>{{ item['title'] }}</h6>
                                                 
                                                 <div class="Pack_image"><!-- start of pack_of_images -->
-                                                    <span *ngFor="let prod of item.products">
+                                                    <span *ngFor="let prod of item['products']">
                                                         <img [src]="prod.image" [alt]="prod.title" [title]="prod.title" class="img-fluid" width="70">
                                                     </span>
                                                 </div><!-- end of pack_of_images -->
                                             </div><!-- end of productNameImages -->
                                             
                                             <div class="cartDetailHalf productPriceSize"><!-- start of productPriceSize -->
-                                            	<span>{{item.cart_quantity}} Qty</span> <span><label [innerHTML]="sanitizer.bypassSecurityTrustHtml(cartCurrency)"></label>{{item.price * item.cart_quantity | number:'2.2-2'}}</span>
+                                            	<span>{{item['cart_quantity']}} Qty</span> <span><label [innerHTML]="sanitizer.bypassSecurityTrustHtml(cartCurrency)"></label>{{item['price'] * item['cart_quantity'] | number:'2.2-2'}}</span>
                                             </div><!-- end of productPriceSize -->
                                             
                                         </div><!-- end of cartDetail -->
@@ -300,15 +300,15 @@
                                     <div class="radio_div row paymentMethodDiv"><!-- start of payment_options -->
                                         <div *ngFor="let item of paymentMethodData" class="form-check col-sm-6 col-12"><!-- start of radio_button -->
                                             <label class="toggle">
-                                                <input type="radio" id="pg-{{item.id}}" (change)="onSelectionChange(item.id);" [value]="item.id" formControlName="paymentMethod"> <span class="label-text">{{item.title}}</span><span [innerHTML]="sanitizer.bypassSecurityTrustHtml(item.message)"></span>
+                                                <input type="radio" id="pg-{{ item['id'] }}" (change)="onSelectionChange(item['id']);" [value]="item['id']" formControlName="paymentMethod"> <span class="label-text">{{item['title']}}</span><span [innerHTML]="sanitizer.bypassSecurityTrustHtml(item['message'])"></span>
                                             </label>
                                         </div><!-- end of radio_button -->                                        
                                     </div><!-- end of payment_options -->
                                     
                                     <div class="d-flex p-2 bg-light lastCartReview"><!-- start of lasrCartReview -->
                                         <address *ngIf="selectedAddress['email']">
-                                        	<strong>{{selectedAddress.email}}</strong><br />
-                                        	<strong>{{selectedAddress.firstname+' '+selectedAddress.lastname}}</strong>, {{selectedAddress.address+', '+selectedAddress.city+', '+selectedAddress.state+', '+selectedAddress.country}}, <strong>{{selectedAddress.pincode}}</strong>
+                                        	<strong>{{ selectedAddress['email'] }}</strong><br />
+                                        	<strong>{{ selectedAddress['firstname'] + ' ' + selectedAddress['lastname'] }}</strong>, {{ selectedAddress['address'] + ', ' + selectedAddress['city'] + ', ' + selectedAddress['state'] + ', ' + selectedAddress['country'] }}, <strong>{{ selectedAddress['pincode'] }}</strong>
                                         </address>
                                     </div><!-- end of lasrCartReview -->
                                     <div *ngIf="credits['message']" class="d-flex p-2 bg-light lastCartReview cashBackText"><!-- start of lasrCartReview -->

@@ -1,0 +1,67 @@
+
+/* start of section_box css */
+.section_box{padding:3rem 0; position:relative; z-index:2;}
+
+/***** sliderSec ******/
+.sliderSec{position: relative; width: 100%; display: flex; align-items: center; overflow: hidden; padding: 24px 0;}
+.sliderSec .sliderLink{display: none; align-items: center; margin-bottom: 0; flex-direction: column-reverse; -webkit-box-direction: reverse; -webkit-box-orient: vertical;}
+.sliderSec .sliderLink li{position: relative; transform: rotate(-90deg);}
+.sliderSec .sliderLink li:not(:last-child){margin-top: 3.5rem;}
+.sliderSec .sliderLink li a{font-size: .9rem; color: #ffffff; background: #3b4e76; text-transform: uppercase; display: flex; align-items: center; justify-content: center; padding: 0; width: 5rem; height: 2rem; border-radius: 5px; text-align: center;}
+.sliderSec .sliderLink li a:before{content: ""; position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%); width: 0; height: 0; background: transparent; opacity: 0; border-left: 10px solid transparent; border-right: 10px solid transparent; border-top: 10px solid #3b4e76;}
+.sliderSec .sliderLink li.active a{font-weight: bold; color: #ee9591;}
+.sliderSec .sliderLink li.active a:before{opacity: 1;}
+/* slidesCard */
+.slidesCard .card{border: none; box-shadow: none; background: transparent; padding: 8px;}
+.slidesCard .card figure{margin: 0; position: relative;}
+.slidesCard .card figure img{width: 100%;}
+.slidesCard .card figure .figure-caption{position: absolute; top: 0; left: 0; font-size: .8rem; background: transparent; padding: 0.3rem 0.3rem .4rem; color: #3b4e76; line-height: 1; display: none;}
+.slidesCard .card figure .figure-caption i{font-size: .7rem; margin-left: .3rem;}
+.slidesCard .card .card-body{border-radius: .5rem; background: transparent; padding: 0; margin-bottom: .8rem; overflow: hidden;}
+.slidesCard .card .card-title{font-size: 1rem; color: #000000; text-align: center; margin: 0 0 .3rem 0; font-weight: 600;}
+.slidesCard .card .cardPrice{font-size: .95rem; color: #1E2D4D; text-align: center; margin: 0;}
+.slidesCard .card .cardPrice del{font-size: .95rem; margin-left: .3rem; color: #92B4EC;}
+.slidesCard .card .cardPrice span{font-size: .9rem; font-weight: normal; margin-left: .3rem; color: #ee9591; display: none;}
+/*.slidesCard .card.bottle1 .card-body{background: gray;}
+.slidesCard .card.bottle2 .card-body{background: gray;}
+.slidesCard .card.bottle3 .card-body{background: gray;}
+.slidesCard .card.bottle4 .card-body{background: gray;}
+.slidesCard .card.bottle5 .card-body{background: gray;}
+.slidesCard .card.bottle6 .card-body{background: gray;}*/
+
+@media (max-width: 767.98px) {
+	/* start of brief_subscription_box css */
+	.section_box{padding:2rem 0; margin-top: -2rem;}
+	.section_box .row{padding-top: .5rem;}
+	/* .section_box:not(:last-child){padding-bottom:3rem;} */
+	
+	/************ start of topBanner css ****************/
+	.topBanner h1{font-size: 1.3rem; top: 2.8rem;}
+	.topBanner .carousel-inner video{height: auto;}
+	.topBanner .carousel-inner .bannerContent .container h4 span{font-size: 1rem;}
+	
+	/******** secBanner ******/
+	.secBanner .imgTagLine{padding: .8rem 1rem; font-size: 1.3rem; line-height: 1.1; width: 80%;}
+	.secBanner .figure-caption{left: 0; transform: translateX(0); padding: 0 .8rem; font-size: .85rem; width: 100%; text-align: center;}
+	
+	/***** sliderSec ******/
+	.swiper{padding-left: 1rem;}
+	/*.sliderSec{margin: 3rem 0 0 0;}*/
+	.sliderSec .sliderLink{width: 3rem;}
+	.sliderSec .sliderLink li a{position: relative;}
+	.sliderSec .slidesCard{position: relative;}
+	/*.slidesCard .card .card-body{padding: 5.5rem 0.8rem 1.2rem; margin-top: -5rem;}*/
+	.slidesCard .card figure .figure-caption{font-size: .85rem; border-radius: .4rem; padding: 0.2rem 0.4rem .2rem;}
+	.slidesCard .card figure .figure-caption i{font-size: .8rem;}
+	
+	/******** sceBannerStuff ******/
+	.sceBannerStuff .figure-caption{width: 100%; left: 0; transform: translateX(0);}
+	.sceBannerStuff .figure-caption span{font-size: 1rem; font-weight: 600;}
+}
+
+@media (min-width: 576px) and (max-width: 767.98px) {
+	
+}
+
+@media (max-width: 575px) {	
+}

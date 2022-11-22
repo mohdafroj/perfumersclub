@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { HttpHeaders } from '@angular/common/http';
+import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser, isPlatformServer } from '@angular/common';
 import { Title, Meta, MetaDefinition } from '@angular/platform-browser';
 
 @Injectable({
@@ -24,7 +24,6 @@ export class Myconfig {
 	public headerHiddenPages = ["buynow"];
 	public footerHiddenPages = ['checkout', 'cart', 'onepage', 'login', 'registration', 'launch-offer', 'winter-sale-offer'];
 	public layoutOne = 'shopnow';	
-	public SUBDIR:string;
 	public homeUrl = '';
 	public baseUrl = '';
 	public otpSelectorMessage = 'Please enter email or phone number';
@@ -32,6 +31,7 @@ export class Myconfig {
 	public metaInfo = {};
 	public categories;
     constructor(
+		@Inject(PLATFORM_ID) private _platformId: Object,
 		private meta: Meta, 
 		private title: Title
 	){
@@ -117,21 +117,24 @@ export class Myconfig {
     }
 	
 	scrollToTop(horizontal:number=0, vertical:number=0){
-		//window.scroll(horizontal,vertical);
-		(function smoothscroll(){
-			var currentScroll = document.documentElement.scrollTop || document.body.scrollTop; 
-			if (currentScroll > 0) 
-			{
-				window.requestAnimationFrame(smoothscroll);
-				window.scrollTo(0, currentScroll - (currentScroll / 10));
+		(function smoothscroll(platformId){
+			if ( isPlatformBrowser(platformId) ) {
+				var currentScroll = document.documentElement.scrollTop || document.body.scrollTop; 
+				if (currentScroll > 0) 
+				{
+					window.requestAnimationFrame(smoothscroll);
+					window.scrollTo(0, currentScroll - (currentScroll / 10));
+				}	
 			}
-		})();		
+		})(this._platformId);		
 	}
 
 	scrollToBottom( h: number=0, v: number=0 ) {
-		(function smoothscroll(h, v){
-			window.scrollTo(h, v);
-		})(h, v);
+		(function smoothscroll(h, v, platformId){
+			if ( isPlatformBrowser(platformId) ) {
+				window.scrollTo(h, v);
+			}
+		})(h, v,this._platformId);
 	}
 	
 	setMeta(param) {
@@ -143,12 +146,18 @@ export class Myconfig {
 	}
 
 	getOfferCoupon () {
-		return sessionStorage.getItem("offerCoupon");
+		let coupon = '';
+		if ( isPlatformBrowser(this._platformId) ) {
+			coupon = sessionStorage.getItem("offerCoupon") || '';
+		}
+		return coupon;
 	}
 	setOfferCoupon (coupon) {
-		sessionStorage.setItem("offerCoupon", coupon); 
-		let currentDate = this.getCurrentDate();
-		sessionStorage.setItem("offerDate", currentDate);
+		if ( isPlatformBrowser(this._platformId) ) {
+			sessionStorage.setItem("offerCoupon", coupon); 
+			let currentDate = this.getCurrentDate();
+			sessionStorage.setItem("offerDate", currentDate);
+		}
 		return 1;
 	}
 	
@@ -164,17 +173,25 @@ export class Myconfig {
 	}
 	
 	getOfferDate () {
-		let offerDate = sessionStorage.getItem("offerDate");
+		let offerDate;
+		if ( isPlatformBrowser(this._platformId) ) {
+			offerDate = sessionStorage.getItem("offerDate");
+		}
 		return ( offerDate != undefined ) ? offerDate : '';
 	}
 		
 	getByKey (key) {
-		let item = localStorage.getItem(key);
+		let item;
+		if ( isPlatformBrowser(this._platformId) ) {
+			item = localStorage.getItem(key);
+		}
 		return ( item != undefined ) ? JSON.parse(item) : '';
 	}
 	
 	setByKey (key, item) {
-		localStorage.setItem(key, JSON.stringify(item));
+		if ( isPlatformBrowser(this._platformId) ) {
+			localStorage.setItem(key, JSON.stringify(item));
+		}
 		return item;
 	}
 	
